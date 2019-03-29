@@ -67,7 +67,7 @@ int				main(int argc, char **argv)
 {
 	parsing_argc(argc, argv);
 	print_argc();
-
+	read_data();
 
 
 	exit(0);

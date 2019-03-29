@@ -14,7 +14,9 @@
 # define LEM_IN_H
 
 # include "stdlib.h"
+# include <dirent.h>
 # include "../libft/includes/ft_printf.h"
+#define _ERROR(ex) {ft_printf("%s\n", ex);exit(0);} 
 
 enum	e_bool { false, true };
 
@@ -32,4 +34,5 @@ typedef struct s_cvarss
 }				t_cvarss;
 
 t_cvarss g_flags;
+void read_data();
 #endif
