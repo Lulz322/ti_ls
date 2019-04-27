@@ -6,7 +6,9 @@ void read_data()
 	struct dirent *entry;
 
 if ((dir = opendir("/")) == NULL)
-  _ERROR("opendir() error");
+{
+      	_ERROR("opendir() error");
+}
 else
  	printf("contents of root:");
  while ((entry = readdir(dir)) != NULL)
