@@ -16,7 +16,7 @@
 
 void			errrorrororo(void)
 {
-	ft_printf("MGRN(Usage: ./ft_ls [-l][-a][-r][-R][-t])\n");
+	ft_printf("MGRN(Usage: ./ft_ls -[l][a][r][R][t])\n");
 	ft_printf("\tMRED(-l)\tMRED(coMGRN(loMYLW(rs)\n");
 	ft_printf("\tMRED(-a)\tMBLU(Print MPRP(ways)\n");
 	ft_printf("\tMRED(-r)\tMYLW(Number of) MBLU(steps)\n");
@@ -25,7 +25,22 @@ void			errrorrororo(void)
 	exit(0);
 }
 
-void			parsing_argc(int argc, char **argv)
+void parsing_dirs(int argc, char **argv, int i)
+{
+	if (i == argc)
+		add_elem(&st.dirs, ".");
+	else
+	{
+		while (i < argc)
+		{
+			add_elem(&st.dirs, argv[i]);
+			i++;
+		}
+	}
+
+}
+
+void parsing_flags(int argc, char **argv)
 {
 	int i;
 	int j;
@@ -40,35 +55,41 @@ void			parsing_argc(int argc, char **argv)
 			while (argv[i][++j])
 			{
 				if (argv[i][j] == 'l')
-					g_flags.flag_l = true;
+					st.cv.flag_l = true;
 				else if (argv[i][j] == 'a')
-					g_flags.flag_a = true;
+					st.cv.flag_a = true;
 				else if (argv[i][j] == 'R')
-					g_flags.flag_R = true;
+					st.cv.flag_R = true;
 				else if (argv[i][j] == 't')
-					g_flags.flag_t = true;
+					st.cv.flag_t = true;
 				else if (argv[i][j] == 'r')
-					g_flags.flag_r = true;
+					st.cv.flag_r = true;
 				else
 					errrorrororo();
 			}
 		}
 		else
-			errrorrororo();
+			break ;
 	}
+		parsing_dirs(argc, argv, i);
+}
+
+void			parsing_argc(int argc, char **argv)
+{
+	parsing_flags(argc, argv);
 }
 
 void print_argc(void) {
 	ft_printf("l : %d\nR : %d\nt : %d\nr : %d\na : %d\n",
-	g_flags.flag_l, g_flags.flag_R, g_flags.flag_t, g_flags.flag_r, g_flags.flag_a);
+	st.cv.flag_l, st.cv.flag_R, st.cv.flag_t, st.cv.flag_r, st.cv.flag_a);
 }
 
 int				main(int argc, char **argv)
 {
+	st.dirs = NULL;
 	parsing_argc(argc, argv);
 	print_argc();
+	print_list(st.dirs);
 	read_data();
-
-
 	exit(0);
 }

@@ -2,16 +2,22 @@
 
 void read_data()
 {
-	DIR *dir;
-	struct dirent *entry;
+	DIR				*dir;
+	struct dirent	*entry;
+	t_dirs *dirs;
 
-if ((dir = opendir("/")) == NULL)
-{
-      	_ERROR("opendir() error");
-}
-else
- 	printf("contents of root:");
- while ((entry = readdir(dir)) != NULL)
-	printf("  %s\n", entry->d_name);
-  closedir(dir);
+	dirs = st.dirs;
+	while (dirs)
+	{
+		if ((dir = opendir(dirs->name)) == NULL)
+		{
+			_ERROR("opendir() error");
+		}
+		else
+		 	printf("contents of root:");
+		while ((entry = readdir(dir)) != NULL)
+			printf("  %s\n", entry->d_name);
+		closedir(dir);
+		dirs = dirs->next;
+  }
 }

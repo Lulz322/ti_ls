@@ -19,7 +19,7 @@ CFLAGS := -Wall -Wextra -Wunused
 INC := -I $(CURDIR)/includes/
 
 SRC_D := srcs/
-SRCS := $(abspath $(wildcard $(SRC_D)/*/*.c))
+SRCS := $(abspath $(wildcard $(SRC_D)/*.c))
 OBJS := $(SRCS:%.c=%.o)
 
 DEL := rm -rf
