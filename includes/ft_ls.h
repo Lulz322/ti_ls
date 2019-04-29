@@ -50,4 +50,5 @@ t_gen g_gen;
 void read_data();
 void add_elem(t_dirs **list, char *str);
 void print_list(t_dirs *list);
+void del_elem(t_dirs **list, t_dirs *elem);
 #endif

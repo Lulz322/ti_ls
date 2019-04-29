@@ -38,3 +38,29 @@ void print_list(t_dirs *list) {
 		tmp = tmp->next;
 	}
 }
+
+void del_elem(t_dirs **list, t_dirs *elem)
+{
+	t_dirs *qqq;
+	t_dirs *tmp;
+
+	tmp = NULL;
+	qqq = *list;
+	if (*list == elem)
+	{
+		free(*list);
+		*list = NULL;
+	}
+	else
+	{
+		while (qqq != elem)
+		{
+			tmp = qqq;
+			qqq = qqq->next;
+		}
+		tmp->next = qqq->next;
+		*list = qqq;
+		free(*list);
+		*list = tmp->next;
+	}
+}

@@ -20,7 +20,7 @@ void	clean(void)
 	g_cvars.width = 0;
 	g_cvars.length = 0;
 	g_cvars.prec = 0;
-	while (j++ < 5)
+	while (++j < 5)
 		g_cvars.flag[j] = 0;
 	g_cvars.symbol = 0;
 	g_cvars.dot = 0;

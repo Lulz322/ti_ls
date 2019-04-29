@@ -1,6 +1,6 @@
 #include "../includes/ft_ls.h"
 
-void read_data()
+void read_data(void)
 {
 	DIR				*dir;
 	struct dirent	*entry;
@@ -11,13 +11,16 @@ void read_data()
 	{
 		if ((dir = opendir(dirs->name)) == NULL)
 		{
-			_ERROR("opendir() error");
+			ft_printf("MRED(%s isnt a folder!)\n", dirs->name);
+			dirs = dirs->next;
 		}
 		else
-		 	printf("contents of root:");
-		while ((entry = readdir(dir)) != NULL)
-			printf("  %s\n", entry->d_name);
-		closedir(dir);
-		dirs = dirs->next;
+		{
+			printf("contents of '%s' :\n", dirs->name);
+			while (st.dirs && dir && dirs && (entry = readdir(dir)) != NULL)
+				printf("%s  | %lu\n",entry->d_name, entry->d_ino);
+			closedir(dir);
+			dirs = dirs->next;
+		}
   }
 }

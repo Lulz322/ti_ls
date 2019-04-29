@@ -21,7 +21,7 @@ endif
 #	-Ofast				- MAXIMUM OPTIMIZATION
 
 CC := gcc -march=native -mtune=native -flto -Ofast
-CFLAGS := -Wall -Wextra -Werror -Wunused
+CFLAGS := -Wall -Wextra -Werror -Wunused -g3
 IFLAGS := -I $(CURDIR)/includes/
 
 SRC := $(abspath $(wildcard srcs/*.c))
