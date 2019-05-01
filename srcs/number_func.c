@@ -16,9 +16,10 @@ void funcing_itoa(off_t number, char size[4]) {
 		size[len] = number % 10 + 48;
 		number /= 10;
 	}
+	size[4] = '\0';
 }
 
-void primetive(off_t number, char size[4])
+void primetive(off_t number, char size[4], char c)
 {
 	off_t ostacha;
 	while (number > 1024)
@@ -29,7 +30,8 @@ void primetive(off_t number, char size[4])
 	if (ostacha > 0)
 		number++;
 	funcing_itoa(number, size);
-	ft_strcat(size, "K");
+	ft_strcat(size, &c);
+	size[4] = '\0';
 }
 
 long double roundNo(long double num)
@@ -43,12 +45,14 @@ void kb(off_t number, char size[4], char c)
 	a = (long double)number;
 	char *str;
 
-	a = roundNo(a);
 	str = myfloat(a);
+	a = roundNo(a);
 	size[0] = str[0];
 	size[1] = '.';
 	size[2] = str[1];
 	size[3] = c;
+	size[4] = '\0';
+	free(str);
 }
 
 void bytes(off_t number, char size[4])
@@ -58,11 +62,13 @@ void bytes(off_t number, char size[4])
 	else if (number < 10240)
 		kb(number, size, 'K');
 	else if (number < 1024000)
-		primetive(number, size);
+		primetive(number, size, 'K');
 	else if (number < 10240000)
-		kb(number % 1024000, size, 'M');
-	size[0] = '1';
-	size[1] = '0';
-	size[3] = '2';
-	size[4] = '\0';
+		kb(number, size, 'M');
+	else if (number < 10240000000)
+		primetive(number, size, 'M');
+	else if (number < 102400000000)
+		kb(number, size, 'G');
+	else if (number < 10240000000000)
+		primetive(number, size, 'G');
 }

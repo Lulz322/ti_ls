@@ -29,15 +29,29 @@ struct stat {
 
 // 1 -> | 2->nlinks 3->
 
+void set_tmp(char tmp[512], char *name, char *f_name) {
+	int i;
+
+	i = 0;
+	while (name[i])
+		i++;
+	ft_strcat(tmp, name);
+	if (name[i - 1] != '/')
+		ft_strcat(tmp, "/");
+	ft_strcat(tmp, f_name);
+}
+
 void read_data(void)
 {
 	DIR				*dir;
 	struct dirent	*entry;
 	struct stat 	*buf;
+	char tmp[512];
 	t_dirs *dirs;
 
 	dirs = st.dirs;
 	buf = malloc(sizeof(struct stat));
+	bzero(tmp, 512);
 	while (dirs)
 	{
 		if ((dir = opendir(dirs->name)) == NULL)
@@ -48,12 +62,17 @@ void read_data(void)
 		else
 		{
 			printf("contents of '%s' :\n", dirs->name);
-			while (st.dirs && dir && dirs && (entry = readdir(dir)) != NULL)
+			while (st.dirs && dir && (entry = readdir(dir)) != NULL)
 			{
-				stat(entry->d_name, buf);
-				printf("%ld\n", buf->st_nlink);
+				set_tmp(tmp, dirs->name, entry->d_name);
+				lstat(tmp, buf);
+				dirs->total += buf->st_size;
 				add_file(&dirs->files, entry->d_name, buf);
+				ft_bzero(tmp, 512);
 			}
+			bytes(dirs->total, tmp);
+			printf("total %s\n", tmp);
+			ft_bzero(tmp, 512);
 			closedir(dir);
 			print_files(dirs->files);
 			dirs = dirs->next;

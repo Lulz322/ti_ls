@@ -1,4 +1,5 @@
 #include "../includes/ft_ls.h"
+#include <time.h>
 
 
 char *getUser(uid_t uid)
@@ -32,18 +33,36 @@ void mode_to_letters(int mode,char *str)
     if(mode & S_IXOTH)str[9]='x';
 }
 
+char *pars_data(char *str)
+{
+	int i;
+	char *qqq;
+	int j;
+
+	j = 0;
+	i = 4;
+	qqq = (char *)malloc(sizeof(char) * 13);
+	while (i < 16)
+		qqq[j++] = str[i++];
+	qqq[j] = '\0';
+	return (qqq);
+
+}
+
 t_files *create_file(char *str, struct stat *buff)
 {
 	t_files *elem;
 
 	_ERROR_MALLOC(elem = (t_files *)malloc(sizeof(t_files)));
+	ft_bzero(elem, sizeof(t_files));
 	elem->f_name = ft_strdup(str);
 	mode_to_letters(buff->st_mode, elem->flags);
 	elem->links = buff->st_nlink;
 	elem->UID = getUser(buff->st_uid);
 	elem->GID = getGroup(buff->st_gid);
+	elem->all_time = buff->st_mtim;
+	elem->time = pars_data(ctime(&elem->all_time.tv_sec));
 	bytes(buff->st_size, elem->size);
-	//elem->size = buff->st_size;
 	elem->next = NULL;
 	return (elem);
 }
@@ -70,8 +89,9 @@ void print_files(t_files *list) {
 	tmp = list;
 	while (tmp)
 	{
-		printf("%s %2lu %s %s %4s %s\n",
-		tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size, tmp->f_name);
+		printf("%s%2lu %s %s %4s %s %s\n",
+		tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size,
+		tmp->time, tmp->f_name);
 		tmp = tmp->next;
 	}
 }

@@ -5,6 +5,7 @@ t_dirs *create_elem(char *str)
 	t_dirs *elem;
 
 	_ERROR_MALLOC(elem = (t_dirs *)malloc(sizeof(t_dirs)));
+	ft_bzero(elem, sizeof(t_dirs));
 	elem->name = ft_strdup(str);
 	elem->next = NULL;
 	return (elem);

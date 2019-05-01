@@ -46,6 +46,8 @@ typedef struct s_files
 	char *UID;
 	char *GID;
 	char size[4];
+	struct timespec all_time;
+	char *time;
 	struct s_files *next;
 }t_files;
 
