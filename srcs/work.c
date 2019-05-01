@@ -74,10 +74,12 @@ void read_data(void)
 			q = printsize(dirs->total);
 			if(st.cv.flag_l)
 				printf("total %s\n", q);
+			free(q);
 			ft_bzero(tmp, 512);
 			closedir(dir);
 			print_files(dirs->files);
 			dirs = dirs->next;
 		}
   }
+  free(buf);
 }
