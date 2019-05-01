@@ -88,8 +88,7 @@ int				main(int argc, char **argv)
 {
 	st.dirs = NULL;
 	parsing_argc(argc, argv);
-	print_argc();
-	print_list(st.dirs);
+	//print_list(st.dirs);
 	read_data();
 	exit(0);
 }

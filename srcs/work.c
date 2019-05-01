@@ -47,6 +47,7 @@ void read_data(void)
 	struct dirent	*entry;
 	struct stat 	*buf;
 	char tmp[512];
+	char *q;
 	t_dirs *dirs;
 
 	dirs = st.dirs;
@@ -61,17 +62,18 @@ void read_data(void)
 		}
 		else
 		{
-			printf("contents of '%s' :\n", dirs->name);
+			//printf("contents of '%s' :\n", dirs->name);
 			while (st.dirs && dir && (entry = readdir(dir)) != NULL)
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
 				lstat(tmp, buf);
-				dirs->total += buf->st_size;
+				dirs->total += buf->st_blocks;
 				add_file(&dirs->files, entry->d_name, buf);
 				ft_bzero(tmp, 512);
 			}
-			bytes(dirs->total, tmp);
-			printf("total %s\n", tmp);
+			q = printsize(dirs->total);
+			if(st.cv.flag_l)
+				printf("total %s\n", q);
 			ft_bzero(tmp, 512);
 			closedir(dir);
 			print_files(dirs->files);

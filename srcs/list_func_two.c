@@ -22,6 +22,7 @@ void mode_to_letters(int mode,char *str)
     if(S_ISDIR(mode))str[0]='d';
     if(S_ISCHR(mode))str[0]='c';
     if(S_ISBLK(mode))str[0]='b';
+	if(S_ISLNK(mode))str[0]='l';
     if(mode & S_IRUSR)str[1]='r';
     if(mode & S_IWUSR)str[2]='w';
     if(mode & S_IXUSR)str[3]='x';
@@ -62,7 +63,7 @@ t_files *create_file(char *str, struct stat *buff)
 	elem->GID = getGroup(buff->st_gid);
 	elem->all_time = buff->st_mtim;
 	elem->time = pars_data(ctime(&elem->all_time.tv_sec));
-	bytes(buff->st_size, elem->size);
+	elem->size = printsize(buff->st_size);
 	elem->next = NULL;
 	return (elem);
 }
@@ -89,9 +90,13 @@ void print_files(t_files *list) {
 	tmp = list;
 	while (tmp)
 	{
-		printf("%s%2lu %s %s %4s %s %s\n",
-		tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size,
-		tmp->time, tmp->f_name);
+		if (st.cv.flag_l)
+			printf("%s %3lu %s %s %4s %s %s\n",
+			tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size,
+			tmp->time, tmp->f_name);
+		else
+			printf("%s  ", tmp->f_name);
 		tmp = tmp->next;
 	}
+	printf("\n");
 }
