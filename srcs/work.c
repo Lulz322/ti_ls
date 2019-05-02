@@ -50,18 +50,70 @@ void set_tmp(char tmp[512], char *name, char *f_name) {
 	ft_strcat(tmp, f_name);
 }
 
+t_files *add_files_to_list(DIR *dir, t_dirs *dirs)
+{
+	struct stat 	*buf;
+	struct dirent	*entry;
+	char tmp[512];
+
+	ft_bzero(tmp, 512);
+	buf = malloc(sizeof(struct stat));
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (!st.cv.flag_a)
+		{
+			if (entry->d_name[0] != '.')
+			{
+				set_tmp(tmp, dirs->name, entry->d_name);
+				lstat(tmp, buf);
+				dirs->total += buf->st_blocks;
+				add_file(&dirs->files, entry->d_name, buf, tmp);
+				ft_bzero(tmp, 512);
+			}
+		}
+		else
+			{
+				set_tmp(tmp, dirs->name, entry->d_name);
+				lstat(tmp, buf);
+				dirs->total += buf->st_blocks;
+				add_file(&dirs->files, entry->d_name, buf, tmp);
+				ft_bzero(tmp, 512);
+			}
+	}
+	free(buf);
+	return(dirs->files);
+}
+
+void check_R_flag(t_files *files, t_dirs *dirs)
+{
+	t_files *tmp;
+	char path[512];
+
+	tmp = files;
+	ft_bzero(path, 512);
+	while (tmp)
+	{
+		if (tmp->is_dir && !ft_strequ(tmp->f_name, "..")
+			&& !ft_strequ(tmp->f_name, "."))
+		{
+			set_tmp(path, dirs->name, tmp->f_name);
+			add_beetween(&dirs, path, 0);
+			ft_bzero(path, 512);
+		}
+		tmp = tmp->next;
+	}
+	add_beetween(&dirs, path, 1);
+
+
+}
+
 void read_data(void)
 {
 	DIR				*dir;
-	struct dirent	*entry;
-	struct stat 	*buf;
-	char tmp[512];
 	char *q;
 	t_dirs *dirs;
 
 	dirs = st.dirs;
-	buf = malloc(sizeof(struct stat));
-	bzero(tmp, 512);
 	while (dirs)
 	{
 		if ((dir = opendir(dirs->name)) == NULL)
@@ -72,27 +124,17 @@ void read_data(void)
 		else
 		{
 			printf("%s:\n", dirs->name);
-			while (st.dirs && dir && (entry = readdir(dir)) != NULL)
-			{
-				set_tmp(tmp, dirs->name, entry->d_name);
-				lstat(tmp, buf);
-				if (st.cv.flag_R && is_dir(tmp) &&
-					(!ft_strequ(entry->d_name, "..") && !ft_strequ(entry->d_name, ".")))
-					add_beetween(&dirs, tmp, 0);
-				dirs->total += buf->st_blocks;
-				add_file(&dirs->files, entry->d_name, buf, tmp);
-				ft_bzero(tmp, 512);
-			}
+			dirs->files = add_files_to_list(dir, dirs);
+			dirs->files = sort_list_by_names(dirs->files);
+			if (st.cv.flag_R)
+				check_R_flag(dirs->files, dirs);
 			q = printsize(dirs->total / 2);
 			if(st.cv.flag_l)
 				printf("total %s\n", q);
 			free(q);
-			ft_bzero(tmp, 512);
 			closedir(dir);
 			print_files(dirs->files);
-			add_beetween(&dirs, tmp, 1);
 			dirs = dirs->next;
 		}
   }
-  free(buf);
 }

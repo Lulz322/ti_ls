@@ -79,4 +79,5 @@ void bytes(off_t number, char size[4]);
 char *printsize(size_t  size);
 void add_beetween(t_dirs **list, char *str, bool a);
 bool	is_dir(char *dirname);
+t_files *sort_list_by_names (t_files *list);
 #endif
