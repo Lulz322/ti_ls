@@ -93,7 +93,7 @@ void check_R_flag(t_files *files, t_dirs *dirs)
 	ft_bzero(path, 512);
 	while (tmp)
 	{
-		if (tmp->is_dir && !ft_strequ(tmp->f_name, "..")
+		if (tmp->is_dir && tmp->flags[0] != 'l' &&!ft_strequ(tmp->f_name, "..")
 			&& !ft_strequ(tmp->f_name, "."))
 		{
 			set_tmp(path, dirs->name, tmp->f_name);
@@ -103,8 +103,7 @@ void check_R_flag(t_files *files, t_dirs *dirs)
 		tmp = tmp->next;
 	}
 	add_beetween(&dirs, path, 1);
-
-
+	ft_bzero(path, 512);
 }
 
 void read_data(void)

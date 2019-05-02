@@ -62,9 +62,9 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 	ft_bzero(elem, sizeof(t_files));
 	elem->f_name = ft_strdup(str);
 	elem->is_dir = is_dir(way);
+	mode_to_letters(buff->st_mode, elem->flags);
 	if (st.cv.flag_l)
 	{
-		mode_to_letters(buff->st_mode, elem->flags);
 		elem->links = buff->st_nlink;
 		elem->UID = getUser(buff->st_uid);
 		elem->GID = getGroup(buff->st_gid);
