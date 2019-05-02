@@ -40,6 +40,30 @@ void print_list(t_dirs *list) {
 	}
 }
 
+void add_beetween(t_dirs **list, char *str, bool a)
+{
+	t_dirs *tmp;
+	t_dirs *eby;
+	t_dirs *save_next;
+	static t_dirs *save;
+
+	if (a == 1)
+	{
+		save = NULL;
+		return ;
+	}
+	tmp = *list;
+	if (save)
+		while (tmp != save)
+			tmp = tmp->next;
+	save_next = tmp->next;
+	eby = tmp;
+	eby->next = create_elem(str);
+	eby->next->next = save_next;
+	save = eby->next;
+}
+
+
 void del_elem(t_dirs **list, t_dirs *elem)
 {
 	t_dirs *qqq;

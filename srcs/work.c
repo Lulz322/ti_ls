@@ -29,6 +29,15 @@ struct stat {
 
 // 1 -> | 2->nlinks 3->
 
+bool	is_dir(char *dirname)
+{
+	DIR	*dir;
+
+	if ((dir = opendir(dirname)) && !closedir(dir))
+			return (true);
+	return (false);
+}
+
 void set_tmp(char tmp[512], char *name, char *f_name) {
 	int i;
 
@@ -62,22 +71,26 @@ void read_data(void)
 		}
 		else
 		{
-			//printf("contents of '%s' :\n", dirs->name);
+			printf("%s:\n", dirs->name);
 			while (st.dirs && dir && (entry = readdir(dir)) != NULL)
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
 				lstat(tmp, buf);
+				if (st.cv.flag_R && is_dir(tmp) &&
+					(!ft_strequ(entry->d_name, "..") && !ft_strequ(entry->d_name, ".")))
+					add_beetween(&dirs, tmp, 0);
 				dirs->total += buf->st_blocks;
-				add_file(&dirs->files, entry->d_name, buf);
+				add_file(&dirs->files, entry->d_name, buf, tmp);
 				ft_bzero(tmp, 512);
 			}
-			q = printsize(dirs->total);
+			q = printsize(dirs->total / 2);
 			if(st.cv.flag_l)
 				printf("total %s\n", q);
 			free(q);
 			ft_bzero(tmp, 512);
 			closedir(dir);
 			print_files(dirs->files);
+			add_beetween(&dirs, tmp, 1);
 			dirs = dirs->next;
 		}
   }

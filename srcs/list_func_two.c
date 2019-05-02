@@ -6,14 +6,18 @@ char *getUser(uid_t uid)
 {
     struct passwd *pws;
     pws = getpwuid(uid);
+	if (pws)
         return (pws->pw_name);
+	return (0);
 }
 
 char *getGroup(gid_t gid)
 {
     struct group *pws;
     pws = getgrgid(gid);
+	if (pws)
         return (pws->gr_name);
+	return (0);
 }
 
 void mode_to_letters(int mode,char *str)
@@ -50,37 +54,41 @@ char *pars_data(char *str)
 
 }
 
-t_files *create_file(char *str, struct stat *buff)
+t_files *create_file(char *str, struct stat *buff, char *way)
 {
 	t_files *elem;
 
 	_ERROR_MALLOC(elem = (t_files *)malloc(sizeof(t_files)));
 	ft_bzero(elem, sizeof(t_files));
 	elem->f_name = ft_strdup(str);
-	mode_to_letters(buff->st_mode, elem->flags);
-	elem->links = buff->st_nlink;
-	elem->UID = getUser(buff->st_uid);
-	elem->GID = getGroup(buff->st_gid);
-	elem->all_time = buff->st_mtim;
-	elem->time = pars_data(ctime(&elem->all_time.tv_sec));
-	elem->size = printsize(buff->st_size);
+	elem->is_dir = is_dir(way);
+	if (st.cv.flag_l)
+	{
+		mode_to_letters(buff->st_mode, elem->flags);
+		elem->links = buff->st_nlink;
+		elem->UID = getUser(buff->st_uid);
+		elem->GID = getGroup(buff->st_gid);
+		elem->all_time = buff->st_mtim;
+		elem->time = pars_data(ctime(&elem->all_time.tv_sec));
+		elem->size = printsize(buff->st_size);
+	}
 	elem->next = NULL;
 	return (elem);
 }
 
-void add_file(t_files **list, char *str, struct stat *buf)
+void add_file(t_files **list, char *str, struct stat *buf, char *way)
 {
 	t_files *tmp;
 
 	tmp = NULL;
 	if (!*list)
-		*list = create_file(str, buf);
+		*list = create_file(str, buf, way);
 	else
 	{
 		tmp = *list;
 		while (tmp->next)
 			tmp = tmp->next;
-		tmp->next = create_file(str, buf);
+		tmp->next = create_file(str, buf, way);
 	}
 }
 
@@ -95,7 +103,10 @@ void print_files(t_files *list) {
 			tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size,
 			tmp->time, tmp->f_name);
 		else
-			printf("%s  ", tmp->f_name);
+			if (tmp->is_dir)
+				ft_printf("MBLU(%s)  ", tmp->f_name);
+			else
+				ft_printf("%s  ", tmp->f_name);
 		tmp = tmp->next;
 	}
 	printf("\n");

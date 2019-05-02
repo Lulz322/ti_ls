@@ -49,6 +49,7 @@ typedef struct s_files
 	char *size;
 	struct timespec all_time;
 	char *time;
+	bool is_dir;
 	struct s_files *next;
 }t_files;
 
@@ -72,8 +73,10 @@ void add_elem(t_dirs **list, char *str);
 void print_list(t_dirs *list);
 void del_elem(t_dirs **list, t_dirs *elem);
 void mode_to_letters(int mode,char *str);
-void add_file(t_files **list, char *str, struct stat *buf);
+void add_file(t_files **list, char *str, struct stat *buf, char *way);
 void print_files(t_files *list);
 void bytes(off_t number, char size[4]);
 char *printsize(size_t  size);
+void add_beetween(t_dirs **list, char *str, bool a);
+bool	is_dir(char *dirname);
 #endif
