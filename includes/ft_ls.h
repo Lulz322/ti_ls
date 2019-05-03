@@ -68,6 +68,7 @@ typedef struct s_gen
 {
 	t_dirs *dirs;
 	t_cvarss cv;
+	bool is_name;
 }				t_gen;
 
 t_gen g_gen;
@@ -85,4 +86,5 @@ bool	is_dir(char *dirname);
 t_files *sort_list_by_names (t_files *list);
 t_dirs *sort_dirs_by_names(t_dirs *dirs);
 void del_files(t_files **files);
+void del_file(t_files **pzdc);
 #endif

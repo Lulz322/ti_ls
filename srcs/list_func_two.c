@@ -8,7 +8,7 @@ char *getUser(uid_t uid)
     pws = getpwuid(uid);
 	if (pws)
         return (pws->pw_name);
-	return (0);
+	return ("?");
 }
 
 char *getGroup(gid_t gid)
@@ -17,12 +17,12 @@ char *getGroup(gid_t gid)
     pws = getgrgid(gid);
 	if (pws)
         return (pws->gr_name);
-	return (0);
+	return ("?");
 }
 
 void mode_to_letters(int mode,char *str)
 {
-    strcpy(str,"----------");
+    strcpy(str,"---------- ");
     if(S_ISDIR(mode))str[0]='d';
     if(S_ISCHR(mode))str[0]='c';
     if(S_ISBLK(mode))str[0]='b';
@@ -103,6 +103,7 @@ void add_link(t_files *elem, char *way)
 	char *tmp;
 
 	len = readlink(way, qqq, 1025);
+	qqq[len] = '\0';
 	tmp = elem->f_name;
 	elem->f_name = ft_strjoin(elem->f_name, " -> ");
 	free(tmp);
@@ -164,23 +165,33 @@ void check_file_flags(t_files *tmp)
 		ft_printf("%s ", tmp->f_name);
 }
 
-void del_files(t_files **files)
+void del_file(t_files **pzdc)
 {
 	t_files *del_me;
 
-	while (*files)
+	del_me = *pzdc;
+	if (st.cv.flag_l)
 	{
-		del_me = *files;
-		if (st.cv.flag_l)
-		{
-			free(del_me->UID);
-			free(del_me->GID);
-			free(del_me->size);
-			free(del_me->time);
-		}
-		free(del_me->f_name);
+		free(del_me->UID);
+		free(del_me->GID);
+		free(del_me->size);
+		free(del_me->time);
+	}
+	free(del_me->f_name);
+}
+
+void del_files(t_files **files)
+{
+	t_files *del_me;
+	t_files *tmp;
+
+	tmp = *files;
+	while (tmp)
+	{
+		del_me = tmp;
+		del_file(&del_me);
+		tmp = tmp->next;
 		free(del_me);
-		*files = (*files)->next;
 	}
 }
 
@@ -199,13 +210,14 @@ void print_files(t_files *list) {
 			if (st.cv.flag_h)
 				ft_printf("%6s ", tmp->size);
 			else
-				ft_printf("%6lld ", tmp->real_size);
+				ft_printf("%18lld ", tmp->real_size);
 			ft_printf("%12s ", tmp->time);
 		}
 		check_file_flags(tmp);
-		if (st.cv.flag_l)
-			ft_printf("\n");
+		if (tmp->next && st.cv.flag_l)
+			printf("\n");
 		tmp = tmp->next;
 	}
 	ft_printf("\n");
+
 }

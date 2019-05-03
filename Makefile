@@ -20,9 +20,9 @@ endif
 #	-flto				- Enable Link Time Optimization
 #	-Ofast				- MAXIMUM OPTIMIZATION
 #
-#kodsfdsfadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-CC := gcc
-CFLAGS := -Wall -Wextra -Wunused -march=native -mtune=native -flto -Ofast
+#-march=native -mtune=native -flto -Ofast
+CC := gcc -g3
+CFLAGS := -Wall -Wextra -Wunused
 IFLAGS := -I $(CURDIR)/includes/
 
 SRC := $(abspath $(wildcard srcs/*.c))

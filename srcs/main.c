@@ -86,20 +86,53 @@ void print_argc(void) {
 	st.cv.flag_l, st.cv.flag_R, st.cv.flag_t, st.cv.flag_r, st.cv.flag_a);
 }
 
+
+int		is_file(char *filename, t_files **argc)
+{
+	struct stat buf;
+
+	if (lstat(filename, &buf))
+		return 0;
+	else
+		add_file(argc, filename, &buf, filename);
+	return (1);
+}
+
+void read_argc(t_files *files, t_dirs *dirs)
+{
+	if (files)
+	{
+		files = sort_list_by_names(files);
+		print_files(files);
+		del_files(&files);
+		st.is_name = true;
+		if (dirs)
+		ft_printf("\n");
+	}
+}
+
 void check_dirs(t_dirs *dirs)
 {
 	t_dirs *tmp;
+	t_files *argc;
 
+	argc = NULL;
 	tmp = dirs;
 	while (tmp)
 	{
 		if (!is_dir(tmp->name))
 		{
-			ft_printf("MRED(%s isnt a folder!)\n", tmp->name);
-			del_elem(&dirs, tmp);
+			if (!is_file(tmp->name, &argc))
+			{
+				ft_printf("MRED(%s isnt a folder/file!)\n", tmp->name);
+				del_elem(&dirs, tmp);
+			}
+			else
+				del_elem(&dirs, tmp);
 		}
 		tmp = tmp->next;
 	}
+	read_argc(argc, dirs);
 	st.dirs = dirs;
 }
 
@@ -111,7 +144,5 @@ int				main(int argc, char **argv)
 	check_dirs(st.dirs);
 	//print_list(st.dirs);
 	read_data();
-	system("leaks ft_ls");
-
-
+	//system("leaks ft_ls");
 }

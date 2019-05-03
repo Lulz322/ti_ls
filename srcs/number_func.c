@@ -20,7 +20,7 @@ char *less_then_ten(size_t size, size_t rem)
 	}
 	tmp[1] = '\0';
 	tmp2 = ft_itoa(size);
-	str = ft_memalloc(ft_strlen(tmp2) + 3);
+	str = ft_memalloc(ft_strlen(tmp2) + 5);
 	ft_strcat(str, tmp2);
 	ft_strcat(str, ".");
 	ft_strcat(str, tmp);
@@ -55,6 +55,7 @@ char *printsize(size_t  size)
 			str = ft_itoa(size + rem / 1024);
 	else
 		str = less_then_ten(size, rem);
-	ft_strcat(str, SIZES[div]);
+	if (div <= 4 )
+		ft_strcat(str, SIZES[div]);
 	return (str);
 }

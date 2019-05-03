@@ -112,10 +112,12 @@ void read_data(void)
 	t_dirs *dirs;
 
 	dirs = st.dirs;
+	if (dirs && dirs->next)
+		st.is_name = true;
 	while (dirs)
 	{
 		dir = opendir(dirs->name);
-		if (dirs->next)
+		if (st.is_name || st.cv.flag_R)
 			ft_printf("%s:\n", dirs->name);
 		dirs->files = add_files_to_list(dir, dirs);
 		dirs->files = sort_list_by_names(dirs->files);
