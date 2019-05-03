@@ -26,8 +26,16 @@ t_files		*split_head_files(t_files *files)
 static int			check_split(t_files *files)
 {
 	if (files && files->next)
-		if (ft_strcmp(files->f_name, files->next->f_name) > 0)
-			return (1);
+	{
+		if (!st.cv.flag_r)
+		{
+			if (ft_strcmp(files->f_name, files->next->f_name) > 0)
+				return (1);
+		}
+		else
+			if (-ft_strcmp(files->f_name, files->next->f_name) > 0)
+				return (1);
+	}
 	return (0);
 }
 

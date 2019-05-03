@@ -64,6 +64,8 @@ void parsing_flags(int argc, char **argv)
 					st.cv.flag_t = true;
 				else if (argv[i][j] == 'r')
 					st.cv.flag_r = true;
+				else if (argv[i][j] == 'h')
+					st.cv.flag_h = true;
 				else
 					errrorrororo();
 			}
@@ -84,11 +86,32 @@ void print_argc(void) {
 	st.cv.flag_l, st.cv.flag_R, st.cv.flag_t, st.cv.flag_r, st.cv.flag_a);
 }
 
+void check_dirs(t_dirs *dirs)
+{
+	t_dirs *tmp;
+
+	tmp = dirs;
+	while (tmp)
+	{
+		if (!is_dir(tmp->name))
+		{
+			ft_printf("MRED(%s isnt a folder!)\n", tmp->name);
+			del_elem(&dirs, tmp);
+		}
+		tmp = tmp->next;
+	}
+	st.dirs = dirs;
+}
+
 int				main(int argc, char **argv)
 {
 	st.dirs = NULL;
 	parsing_argc(argc, argv);
+	st.dirs = sort_dirs_by_names(st.dirs);
+	check_dirs(st.dirs);
 	//print_list(st.dirs);
 	read_data();
-	exit(0);
+	system("leaks ft_ls");
+
+
 }

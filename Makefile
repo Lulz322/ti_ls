@@ -19,10 +19,10 @@ endif
 #							current system architecture on which project compiling
 #	-flto				- Enable Link Time Optimization
 #	-Ofast				- MAXIMUM OPTIMIZATION
-#-march=native -mtune=native -flto -Ofast
+#
 #kodsfdsfadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-CC := gcc -g3
-CFLAGS := -Wall -Wextra -Wunused
+CC := gcc
+CFLAGS := -Wall -Wextra -Wunused -march=native -mtune=native -flto -Ofast
 IFLAGS := -I $(CURDIR)/includes/
 
 SRC := $(abspath $(wildcard srcs/*.c))

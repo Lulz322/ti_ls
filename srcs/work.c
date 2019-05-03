@@ -38,7 +38,7 @@ bool	is_dir(char *dirname)
 	return (false);
 }
 
-void set_tmp(char tmp[512], char *name, char *f_name) {
+void set_tmp(char tmp[1025], char *name, char *f_name) {
 	int i;
 
 	i = 0;
@@ -52,45 +52,43 @@ void set_tmp(char tmp[512], char *name, char *f_name) {
 
 t_files *add_files_to_list(DIR *dir, t_dirs *dirs)
 {
-	struct stat 	*buf;
+	struct stat 	buf;
 	struct dirent	*entry;
-	char tmp[512];
+	char tmp[1025];
 
-	ft_bzero(tmp, 512);
-	buf = malloc(sizeof(struct stat));
-	while ((entry = readdir(dir)) != NULL)
+	ft_bzero(tmp, 1025);
+	while (dir && (entry = readdir(dir)) != NULL)
 	{
 		if (!st.cv.flag_a)
 		{
 			if (entry->d_name[0] != '.')
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
-				lstat(tmp, buf);
-				dirs->total += buf->st_blocks;
-				add_file(&dirs->files, entry->d_name, buf, tmp);
-				ft_bzero(tmp, 512);
+				lstat(tmp, &buf);
+				dirs->total += buf.st_blocks;
+				add_file(&dirs->files, entry->d_name, &buf, tmp);
+				ft_bzero(tmp, 1025);
 			}
 		}
 		else
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
-				lstat(tmp, buf);
-				dirs->total += buf->st_blocks;
-				add_file(&dirs->files, entry->d_name, buf, tmp);
-				ft_bzero(tmp, 512);
+				lstat(tmp, &buf);
+				dirs->total += buf.st_blocks;
+				add_file(&dirs->files, entry->d_name, &buf, tmp);
+				ft_bzero(tmp, 1025);
 			}
 	}
-	free(buf);
 	return(dirs->files);
 }
 
 void check_R_flag(t_files *files, t_dirs *dirs)
 {
 	t_files *tmp;
-	char path[512];
+	char path[1025];
 
 	tmp = files;
-	ft_bzero(path, 512);
+	ft_bzero(path, 1025);
 	while (tmp)
 	{
 		if (tmp->is_dir && tmp->flags[0] != 'l' &&!ft_strequ(tmp->f_name, "..")
@@ -98,42 +96,41 @@ void check_R_flag(t_files *files, t_dirs *dirs)
 		{
 			set_tmp(path, dirs->name, tmp->f_name);
 			add_beetween(&dirs, path, 0);
-			ft_bzero(path, 512);
+			ft_bzero(path, 1025);
 		}
 		tmp = tmp->next;
 	}
 	add_beetween(&dirs, path, 1);
-	ft_bzero(path, 512);
+	ft_bzero(path, 1025);
 }
 
 void read_data(void)
 {
 	DIR				*dir;
 	char *q;
+	t_dirs *del_me;
 	t_dirs *dirs;
 
 	dirs = st.dirs;
 	while (dirs)
 	{
-		if ((dir = opendir(dirs->name)) == NULL)
-		{
-			ft_printf("MRED(%s isnt a folder!)\n", dirs->name);
-			dirs = dirs->next;
-		}
-		else
-		{
-			printf("%s:\n", dirs->name);
-			dirs->files = add_files_to_list(dir, dirs);
-			dirs->files = sort_list_by_names(dirs->files);
-			if (st.cv.flag_R)
-				check_R_flag(dirs->files, dirs);
-			q = printsize(dirs->total / 2);
-			if(st.cv.flag_l)
-				printf("total %s\n", q);
-			free(q);
-			closedir(dir);
-			print_files(dirs->files);
-			dirs = dirs->next;
-		}
-  }
+		dir = opendir(dirs->name);
+		if (dirs->next)
+			ft_printf("%s:\n", dirs->name);
+		dirs->files = add_files_to_list(dir, dirs);
+		dirs->files = sort_list_by_names(dirs->files);
+		if (st.cv.flag_R)
+			check_R_flag(dirs->files, dirs);
+		q = printsize(dirs->total);
+		if(st.cv.flag_l)
+			ft_printf("total %s\n", q);
+		free(q);
+		closedir(dir);
+		print_files(dirs->files);
+		if (dirs->next)
+			ft_printf("\n");
+		del_me = dirs;
+		dirs = dirs->next;
+		del_elem(&st.dirs, del_me);
+  	}
 }

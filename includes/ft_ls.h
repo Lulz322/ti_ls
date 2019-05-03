@@ -18,6 +18,7 @@
  #include <sys/stat.h>
  #include <pwd.h>
  #include <grp.h>
+ #include <time.h>
  #include <inttypes.h>
 # include "../libft/includes/ft_printf.h"
 #define _ERROR(ex) {ft_printf("%s\n", ex);exit(0);}
@@ -37,17 +38,19 @@ typedef struct s_cvarss
 	bool flag_R;
 	bool flag_r;
 	bool flag_t;
+	bool flag_h;
 }				t_cvarss;
 
 typedef struct s_files
 {
 	char *f_name;
 	char flags[11];
-	__nlink_t links; //unsigned int
+	nlink_t links; //unsigned int
 	char *UID;
 	char *GID;
 	char *size;
-	struct timespec all_time;
+	off_t real_size;
+	long all_time;
 	char *time;
 	bool is_dir;
 	struct s_files *next;
@@ -80,4 +83,6 @@ char *printsize(size_t  size);
 void add_beetween(t_dirs **list, char *str, bool a);
 bool	is_dir(char *dirname);
 t_files *sort_list_by_names (t_files *list);
+t_dirs *sort_dirs_by_names(t_dirs *dirs);
+void del_files(t_files **files);
 #endif

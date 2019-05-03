@@ -66,26 +66,19 @@ void add_beetween(t_dirs **list, char *str, bool a)
 
 void del_elem(t_dirs **list, t_dirs *elem)
 {
-	t_dirs *qqq;
 	t_dirs *tmp;
+	t_dirs *save;
 
-	tmp = NULL;
-	qqq = *list;
-	if (*list == elem)
-	{
-		free(*list);
-		*list = NULL;
+	tmp = *list;
+	save = tmp;
+	while (tmp != elem) {
+		save = tmp;
+		tmp = tmp->next;
 	}
-	else
-	{
-		while (qqq != elem)
-		{
-			tmp = qqq;
-			qqq = qqq->next;
-		}
-		tmp->next = qqq->next;
-		*list = qqq;
-		free(*list);
-		*list = tmp->next;
-	}
+	if (*list == tmp)
+		*list = (*list)->next;
+	save->next = tmp->next;
+	free(tmp->name);
+	del_files(&tmp->files);
+	free(tmp);
 }

@@ -38,20 +38,77 @@ void mode_to_letters(int mode,char *str)
     if(mode & S_IXOTH)str[9]='x';
 }
 
-char *pars_data(char *str)
+char	*ft_strndup(const char *s1, size_t n)
 {
-	int i;
+	char	*res;
+	size_t	i;
+
+	i = 0;
+	res = ft_strnew(n);
+	if (res)
+		while (i < n)
+		{
+			res[i] = s1[i];
+			i++;
+		}
+	return (res);
+}
+
+char  *privet(char *str, long all_time)
+{
+	long t;
+	long half_year;
+	char *jopa;
+	char *tmp;
 	char *qqq;
-	int j;
 
-	j = 0;
-	i = 4;
-	qqq = (char *)malloc(sizeof(char) * 13);
-	while (i < 16)
-		qqq[j++] = str[i++];
-	qqq[j] = '\0';
+	t = (long)time(NULL);
+	half_year = 15768000;
+	if (t - all_time > half_year)
+	{
+		qqq = ft_strndup(&str[4], 7);
+		jopa = ft_strndup(&str[20], 4);
+		tmp = qqq;
+		qqq = ft_strjoin(qqq, " ");
+		free(tmp);
+		tmp = qqq;
+		qqq = ft_strjoin(qqq, jopa);
+		free(tmp);
+		free(jopa);
+	}
+	else
+	{
+		qqq = ft_strndup(&str[4], 6);
+		jopa = ft_strndup(&str[10], 6);
+		tmp = qqq;
+		qqq = ft_strjoin(qqq, jopa);
+		free(tmp);
+		free(jopa);
+	}
+	return(qqq);
+}
+
+char *pars_data(char *str, long all_time)
+{
+	char *qqq;
+	qqq = privet(str, all_time);
+
 	return (qqq);
+}
 
+void add_link(t_files *elem, char *way)
+{
+	int len;
+	char qqq[1025];
+	char *tmp;
+
+	len = readlink(way, qqq, 1025);
+	tmp = elem->f_name;
+	elem->f_name = ft_strjoin(elem->f_name, " -> ");
+	free(tmp);
+	tmp = elem->f_name;
+	elem->f_name = ft_strjoin(elem->f_name, qqq);
+	free(tmp);
 }
 
 t_files *create_file(char *str, struct stat *buff, char *way)
@@ -65,12 +122,15 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 	mode_to_letters(buff->st_mode, elem->flags);
 	if (st.cv.flag_l)
 	{
+		if (elem->flags[0] == 'l')
+			add_link(elem, way);
 		elem->links = buff->st_nlink;
-		elem->UID = getUser(buff->st_uid);
-		elem->GID = getGroup(buff->st_gid);
-		elem->all_time = buff->st_mtim;
-		elem->time = pars_data(ctime(&elem->all_time.tv_sec));
+		elem->UID = ft_strdup(getUser(buff->st_uid));
+		elem->GID = ft_strdup(getGroup(buff->st_gid));
+		elem->all_time = (long)buff->st_mtime;
+		elem->time = pars_data(ctime(&elem->all_time), elem->all_time);
 		elem->size = printsize(buff->st_size);
+		elem->real_size = (long long)buff->st_size;
 	}
 	elem->next = NULL;
 	return (elem);
@@ -92,6 +152,38 @@ void add_file(t_files **list, char *str, struct stat *buf, char *way)
 	}
 }
 
+void check_file_flags(t_files *tmp)
+{
+	if (tmp->is_dir)
+		ft_printf("MCYN(%s)  ", tmp->f_name);
+	else if (ft_strequ("-rwxr-xr-x", tmp->flags))
+		ft_printf("MRED(%s) ", tmp->f_name);
+	else if (ft_strequ("lrwxr-xr-x", tmp->flags))
+		ft_printf("MPRP(%s) ", tmp->f_name);
+	else
+		ft_printf("%s ", tmp->f_name);
+}
+
+void del_files(t_files **files)
+{
+	t_files *del_me;
+
+	while (*files)
+	{
+		del_me = *files;
+		if (st.cv.flag_l)
+		{
+			free(del_me->UID);
+			free(del_me->GID);
+			free(del_me->size);
+			free(del_me->time);
+		}
+		free(del_me->f_name);
+		free(del_me);
+		*files = (*files)->next;
+	}
+}
+
 void print_files(t_files *list) {
 	t_files *tmp;
 
@@ -99,15 +191,21 @@ void print_files(t_files *list) {
 	while (tmp)
 	{
 		if (st.cv.flag_l)
-			printf("%s %3lu %s %s %4s %s %s\n",
-			tmp->flags, tmp->links ,tmp->UID, tmp->GID, tmp->size,
-			tmp->time, tmp->f_name);
-		else
-			if (tmp->is_dir)
-				ft_printf("MBLU(%s)  ", tmp->f_name);
+		{
+			ft_printf("%s ", tmp->flags);
+			ft_printf("%3lu ", tmp->links);
+			ft_printf("%6s  ", tmp->UID);
+			ft_printf("%12s ", tmp->GID);
+			if (st.cv.flag_h)
+				ft_printf("%6s ", tmp->size);
 			else
-				ft_printf("%s  ", tmp->f_name);
+				ft_printf("%6lld ", tmp->real_size);
+			ft_printf("%12s ", tmp->time);
+		}
+		check_file_flags(tmp);
+		if (st.cv.flag_l)
+			ft_printf("\n");
 		tmp = tmp->next;
 	}
-	printf("\n");
+	ft_printf("\n");
 }
