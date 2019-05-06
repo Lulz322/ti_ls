@@ -118,6 +118,8 @@ void read_argc(t_files *files, t_dirs *dirs)
 {
 	if (files)
 	{
+		if (st.cv.flag_t)
+			files = sort_list_by_time(files);
 		files = sort_list_by_names(files);
 		print_files(files,dirs);
 		del_files(&files);
@@ -158,7 +160,10 @@ int				main(int argc, char **argv)
 {
 	st.dirs = NULL;
 	parsing_argc(argc, argv);
-	st.dirs = sort_dirs_by_names(st.dirs);
+	if (st.cv.flag_t)
+		st.dirs = sort_dirs_by_time(st.dirs);
+	else
+		st.dirs = sort_dirs_by_names(st.dirs);
 	check_dirs(st.dirs);
 	//print_list(st.dirs);
 	read_data();

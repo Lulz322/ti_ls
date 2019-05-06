@@ -133,7 +133,7 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 		elem->size = printsize(buff->st_size);
 		elem->real_size = (long long)buff->st_size;
 		elem->major = (long)major(buff->st_rdev);
-		elem->major = (long)minor(buff->st_rdev);
+		elem->minor = (long)minor(buff->st_rdev);
 	}
 	elem->next = NULL;
 	return (elem);

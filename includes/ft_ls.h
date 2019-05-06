@@ -16,7 +16,7 @@
 # include "stdlib.h"
 # include <dirent.h>
  #include <sys/stat.h>
- #include <sys/type.h>
+ #include <sys/types.h>
  #include <pwd.h>
  #include <grp.h>
  #include <time.h>
@@ -93,4 +93,11 @@ t_dirs *sort_dirs_by_names(t_dirs *dirs);
 void del_files(t_files **files);
 void add_name(t_files **list, char *str);
 void del_file(t_files **pzdc);
+t_dirs *split_head_dirs(t_dirs *dirs);
+t_files		*split_head_files(t_files *files);
+void				split_other_files(t_files *files);
+t_dirs *sort_dirs_by_time(t_dirs *dirs);
+void				split_other_dirs(t_dirs *dirs);
+t_files		*sort_list_by_time(t_files *files);
+
 #endif
