@@ -61,7 +61,6 @@ t_files *add_files_to_list(DIR *dir, t_dirs *dirs)
 {
 	struct dirent	*entry;
 
-
 	while (dir && (entry = readdir(dir)) != NULL)
 	{
 		if (!st.cv.flag_a)
@@ -105,7 +104,7 @@ t_files *all_operations(t_files *files, DIR *dir, t_dirs *dirs)
 	else
 		files = sort_list_by_names(dirs->files);
 	if (st.cv.flag_R)
-		check_R_flag(dirs->files, dirs);
+		check_R_flag(files, dirs);
 	return (files);
 }
 

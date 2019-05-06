@@ -235,9 +235,14 @@ void print_files(t_files *list, t_dirs *dirs) {
 	tmp = list;
 	if(st.cv.flag_l && !tmp->is_perm)
 	{
-			q = printsize(dirs->total);
-			ft_printf("total %s\n", q);
-			free(q);
+			if (!st.cv.flag_h)
+				ft_printf("total %lld\n", dirs->total);
+			else
+			{
+				q = printsize(dirs->total);
+				ft_printf("total %s\n", q);
+				free(q);
+			}
 	}
 	while (tmp)
 	{
