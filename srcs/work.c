@@ -1,39 +1,29 @@
 #include "../includes/ft_ls.h"
 
-/*
-struct stat {
-	dev_t     st_dev;          ID of device containing file
-	ino_t     st_ino;          Inode number
-	mode_t    st_mode;         File type and mode
-	nlink_t   st_nlink;        Number of hard links
-	uid_t     st_uid;          User ID of owner
-	gid_t     st_gid;          Group ID of owner
-	dev_t     st_rdev;         Device ID (if special file)
-	off_t     st_size;         Total size, in bytes
-	blksize_t st_blksize;      Block size for filesystem I/O
-	blkcnt_t  st_blocks;       Number of 512B blocks allocated
+bool 	check_permission(char *dirname)
+{
+	struct stat 	buf;
 
-	 Since Linux 2.6, the kernel supports nanosecond
-	   precision for the following timestamp fields.
-	   For the details before Linux 2.6, see NOTES.
+	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode) && !(buf.st_mode & S_IRUSR))
+		return (false);
+	return (true);
+}
 
-	struct timespec st_atim;   Time of last access
-	struct timespec st_mtim;   Time of last modification
-	struct timespec st_ctim;   Time of last status change
-
-#define st_atime st_atim.tv_sec       Backward compatibility
-#define st_mtime st_mtim.tv_sec
-#define st_ctime st_ctim.tv_sec
-};
-*/
-
-// 1 -> | 2->nlinks 3->
+DIR *open_dir(char *dirname, t_dirs *dirs)
+{
+	DIR *dir;
+	if (is_dir(dirname) && check_permission(dirname))
+		return (dir = opendir(dirname));
+	else
+		ft_printf("MRED(ft_ls: %s Permission denied)\n", dirs->name);
+	return (NULL);
+}
 
 bool	is_dir(char *dirname)
 {
-	DIR	*dir;
+	struct stat 	buf;
 
-	if ((dir = opendir(dirname)) && !closedir(dir))
+	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode))
 			return (true);
 	return (false);
 }
@@ -64,18 +54,28 @@ t_files *add_files_to_list(DIR *dir, t_dirs *dirs)
 			if (entry->d_name[0] != '.')
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
-				lstat(tmp, &buf);
-				dirs->total += buf.st_blocks;
-				add_file(&dirs->files, entry->d_name, &buf, tmp);
+				if (lstat(tmp, &buf) != -1)
+				{
+					lstat(tmp, &buf);
+					add_file(&dirs->files, entry->d_name, &buf, tmp);
+					dirs->total += buf.st_blocks;
+				}
+				else
+					add_name(&dirs->files, entry->d_name);
 				ft_bzero(tmp, 1025);
 			}
 		}
 		else
 			{
 				set_tmp(tmp, dirs->name, entry->d_name);
-				lstat(tmp, &buf);
-				dirs->total += buf.st_blocks;
-				add_file(&dirs->files, entry->d_name, &buf, tmp);
+				if (lstat(tmp, &buf) != -1)
+				{
+					lstat(tmp, &buf);
+					add_file(&dirs->files, entry->d_name, &buf, tmp);
+					dirs->total += buf.st_blocks;
+				}
+				else
+					add_name(&dirs->files, entry->d_name);
 				ft_bzero(tmp, 1025);
 			}
 	}
@@ -107,28 +107,24 @@ void check_R_flag(t_files *files, t_dirs *dirs)
 void read_data(void)
 {
 	DIR				*dir;
-	char *q;
 	t_dirs *del_me;
 	t_dirs *dirs;
 
 	dirs = st.dirs;
-	if (dirs && dirs->next)
-		st.is_name = true;
 	while (dirs)
 	{
-		dir = opendir(dirs->name);
-		if (st.is_name || st.cv.flag_R)
-			ft_printf("%s:\n", dirs->name);
-		dirs->files = add_files_to_list(dir, dirs);
-		dirs->files = sort_list_by_names(dirs->files);
-		if (st.cv.flag_R)
-			check_R_flag(dirs->files, dirs);
-		q = printsize(dirs->total);
-		if(st.cv.flag_l)
-			ft_printf("total %s\n", q);
-		free(q);
-		closedir(dir);
-		print_files(dirs->files);
+		if ((dir = open_dir(dirs->name, dirs)))
+		{
+			if ((st.is_name || st.cv.flag_R))
+				ft_printf("%s:\n", dirs->name);
+			dirs->files = add_files_to_list(dir, dirs);
+			dirs->files = sort_list_by_names(dirs->files);
+			if (st.cv.flag_R)
+				check_R_flag(dirs->files, dirs);
+			closedir(dir);
+		}
+		if (dirs->files && dirs)
+			print_files(dirs->files, dirs);
 		if (dirs->next)
 			ft_printf("\n");
 		del_me = dirs;

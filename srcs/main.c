@@ -40,6 +40,20 @@ void parsing_dirs(int argc, char **argv, int i)
 
 }
 
+bool check_second_symbol(char str)
+{
+	const char *symbols = "laRrth-";
+	int j;
+
+	j = -1;
+	while (symbols[++j])
+	{
+		if (symbols[j] == str)
+				return (true);
+	}
+	return (false);
+}
+
 void parsing_flags(int argc, char **argv)
 {
 	int i;
@@ -50,7 +64,7 @@ void parsing_flags(int argc, char **argv)
 	while (++i < argc)
 	{
 		j = 0;
-		if (argv[i][j] == '-')
+		if (argv[i][j] == '-' && check_second_symbol(argv[i][j + 1]))
 		{
 			while (argv[i][++j])
 			{
@@ -66,6 +80,8 @@ void parsing_flags(int argc, char **argv)
 					st.cv.flag_r = true;
 				else if (argv[i][j] == 'h')
 					st.cv.flag_h = true;
+				else if (argv[i][j] == '-')
+					;
 				else
 					errrorrororo();
 			}
@@ -103,7 +119,7 @@ void read_argc(t_files *files, t_dirs *dirs)
 	if (files)
 	{
 		files = sort_list_by_names(files);
-		print_files(files);
+		print_files(files,dirs);
 		del_files(&files);
 		st.is_name = true;
 		if (dirs)
@@ -118,13 +134,15 @@ void check_dirs(t_dirs *dirs)
 
 	argc = NULL;
 	tmp = dirs;
+	if (tmp && tmp->next)
+		st.is_name = true;
 	while (tmp)
 	{
 		if (!is_dir(tmp->name))
 		{
 			if (!is_file(tmp->name, &argc))
 			{
-				ft_printf("MRED(%s isnt a folder/file!)\n", tmp->name);
+				ft_printf("MRED(ft_ls: %s isnt a folder/file!)\n", tmp->name);
 				del_elem(&dirs, tmp);
 			}
 			else
@@ -144,5 +162,5 @@ int				main(int argc, char **argv)
 	check_dirs(st.dirs);
 	//print_list(st.dirs);
 	read_data();
-	//system("leaks ft_ls");
+//	system("leaks ft_ls");
 }

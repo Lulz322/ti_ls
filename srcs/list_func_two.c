@@ -132,9 +132,39 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 		elem->time = pars_data(ctime(&elem->all_time), elem->all_time);
 		elem->size = printsize(buff->st_size);
 		elem->real_size = (long long)buff->st_size;
+		elem->major = (long)major(buff->st_rdev);
+		elem->major = (long)minor(buff->st_rdev);
 	}
 	elem->next = NULL;
 	return (elem);
+}
+
+t_files *create_file_name(char *str)
+{
+	t_files *elem;
+
+	_ERROR_MALLOC(elem = (t_files *)malloc(sizeof(t_files)));
+	ft_bzero(elem, sizeof(t_files));
+	elem->f_name = ft_strdup(str);
+	elem->is_perm = true;
+	elem->next = NULL;
+	return (elem);
+}
+
+void add_name(t_files **list, char *str)
+{
+	t_files *tmp;
+
+	tmp = NULL;
+	if (!*list)
+		*list = create_file_name(str);
+	else
+	{
+		tmp = *list;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = create_file_name(str);
+	}
 }
 
 void add_file(t_files **list, char *str, struct stat *buf, char *way)
@@ -155,14 +185,17 @@ void add_file(t_files **list, char *str, struct stat *buf, char *way)
 
 void check_file_flags(t_files *tmp)
 {
-	if (tmp->is_dir)
-		ft_printf("MCYN(%s)  ", tmp->f_name);
-	else if (ft_strequ("-rwxr-xr-x", tmp->flags))
-		ft_printf("MRED(%s) ", tmp->f_name);
-	else if (ft_strequ("lrwxr-xr-x", tmp->flags))
-		ft_printf("MPRP(%s) ", tmp->f_name);
-	else
-		ft_printf("%s ", tmp->f_name);
+	if (!tmp->is_perm || !st.cv.flag_l)
+	{
+		if (tmp->flags[0] == 'd')
+			ft_printf("MCYN(%s)  ", tmp->f_name);
+		else if (ft_strequ("-rwxr-xr-x", tmp->flags))
+			ft_printf("MRED(%s) ", tmp->f_name);
+		else if (tmp->flags[0] == 'l')
+			ft_printf("MPRP(%s) ", tmp->f_name);
+		else
+			ft_printf("%s ", tmp->f_name);
+	}
 }
 
 void del_file(t_files **pzdc)
@@ -195,29 +228,36 @@ void del_files(t_files **files)
 	}
 }
 
-void print_files(t_files *list) {
+void print_files(t_files *list, t_dirs *dirs) {
 	t_files *tmp;
+	char *q;
 
 	tmp = list;
+	if(st.cv.flag_l && !tmp->is_perm)
+	{
+			q = printsize(dirs->total);
+			ft_printf("total %s\n", q);
+			free(q);
+	}
 	while (tmp)
 	{
-		if (st.cv.flag_l)
+		if (st.cv.flag_l && !tmp->is_perm)
 		{
 			ft_printf("%s ", tmp->flags);
-			ft_printf("%3lu ", tmp->links);
-			ft_printf("%6s  ", tmp->UID);
-			ft_printf("%12s ", tmp->GID);
+			ft_printf("%15lu ", tmp->links);
+			ft_printf("%15s  ", tmp->UID);
+			ft_printf("%15s ", tmp->GID);
 			if (st.cv.flag_h)
-				ft_printf("%6s ", tmp->size);
+				ft_printf("%15s ", tmp->size);
 			else
 				ft_printf("%18lld ", tmp->real_size);
-			ft_printf("%12s ", tmp->time);
+			ft_printf("%15s ", tmp->time);
 		}
 		check_file_flags(tmp);
-		if (tmp->next && st.cv.flag_l)
-			printf("\n");
+		if (st.cv.flag_l && !tmp->is_perm)
+			ft_printf("\n");
 		tmp = tmp->next;
 	}
-	ft_printf("\n");
-
+	if (!st.cv.flag_l)
+		ft_printf("\n");
 }

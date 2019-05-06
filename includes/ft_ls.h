@@ -16,6 +16,7 @@
 # include "stdlib.h"
 # include <dirent.h>
  #include <sys/stat.h>
+ #include <sys/type.h>
  #include <pwd.h>
  #include <grp.h>
  #include <time.h>
@@ -51,8 +52,11 @@ typedef struct s_files
 	char *size;
 	off_t real_size;
 	long all_time;
+	long major;
+	long minor;
 	char *time;
 	bool is_dir;
+	bool is_perm;
 	struct s_files *next;
 }t_files;
 
@@ -78,13 +82,15 @@ void print_list(t_dirs *list);
 void del_elem(t_dirs **list, t_dirs *elem);
 void mode_to_letters(int mode,char *str);
 void add_file(t_files **list, char *str, struct stat *buf, char *way);
-void print_files(t_files *list);
+void print_files(t_files *list, t_dirs *dirs);
 void bytes(off_t number, char size[4]);
 char *printsize(size_t  size);
 void add_beetween(t_dirs **list, char *str, bool a);
 bool	is_dir(char *dirname);
+bool 	check_permission(char *dirname);
 t_files *sort_list_by_names (t_files *list);
 t_dirs *sort_dirs_by_names(t_dirs *dirs);
 void del_files(t_files **files);
+void add_name(t_files **list, char *str);
 void del_file(t_files **pzdc);
 #endif
