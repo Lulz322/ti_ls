@@ -17,11 +17,11 @@
 void			errrorrororo(void)
 {
 	ft_printf("MGRN(Usage: ./ft_ls -[l][a][r][R][t])\n");
-	ft_printf("\tMRED(-l)\tMRED(coMGRN(loMYLW(rs)\n");
-	ft_printf("\tMRED(-a)\tMBLU(Print MPRP(ways)\n");
-	ft_printf("\tMRED(-r)\tMYLW(Number of) MBLU(steps)\n");
-	ft_printf("\tMRED(-R)\t ̶D̶o̶ ̶n̶o̶t̶ ̶p̶r̶i̶n̶t̶ ̶i̶n̶p̶u̶t ̶d̶a̶t̶a̶\n");
-	ft_printf("\tMRED(-t)\tMPRP(All MBLU(data)\n");
+	ft_printf("\tMRED(-l)\tLong data format\n");
+	ft_printf("\tMRED(-a)\tContains File/Directories starts w/ '.'\n");
+	ft_printf("\tMRED(-r)\tReverse sort by names\n");
+	ft_printf("\tMRED(-R)\tContains All dirs in all dirs\n");
+	ft_printf("\tMRED(-t)\tSort by time\n");
 	exit(0);
 }
 
@@ -58,9 +58,11 @@ void parsing_flags(int argc, char **argv)
 {
 	int i;
 	int j;
+	bool hard_code;
 
 	j = 0;
 	i = 0;
+	hard_code = false;
 	while (++i < argc)
 	{
 		j = 0;
@@ -81,7 +83,10 @@ void parsing_flags(int argc, char **argv)
 				else if (argv[i][j] == 'h')
 					st.cv.flag_h = true;
 				else if (argv[i][j] == '-')
-					;
+				{
+					if (check_second_symbol(argv[i][j + 1]))
+						errrorrororo();
+				}
 				else
 					errrorrororo();
 			}
