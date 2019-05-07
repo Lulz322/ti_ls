@@ -4,7 +4,7 @@ bool 	check_permission(char *dirname)
 {
 	struct stat 	buf;
 
-	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode) && !(buf.st_mode & S_IRUSR))
+	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode) && (!(buf.st_mode & S_IRUSR) || !(buf.st_mode & S_IXUSR)))
 		return (false);
 	return (true);
 }
@@ -44,6 +44,7 @@ void set_files(t_dirs *dirs, struct dirent *entry)
 	struct stat buf;
 	char tmp[1025];
 
+	ft_bzero(tmp, 1025);
 	set_tmp(tmp, dirs->name, entry->d_name);
 	if (lstat(tmp, &buf) != -1)
 	{
@@ -123,9 +124,8 @@ void read_data(void)
 				ft_printf("%s:\n", dirs->name);
 			dirs->files = all_operations(dirs->files, dir, dirs);
 			closedir(dir);
-		}
-		if (dirs->files && dirs)
 			print_files(dirs->files, dirs);
+		}
 		if (dirs->next)
 			ft_printf("\n");
 		del_me = dirs;

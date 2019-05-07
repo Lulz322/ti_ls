@@ -58,11 +58,9 @@ void parsing_flags(int argc, char **argv)
 {
 	int i;
 	int j;
-	bool hard_code;
 
 	j = 0;
 	i = 0;
-	hard_code = false;
 	while (++i < argc)
 	{
 		j = 0;
