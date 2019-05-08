@@ -17,7 +17,7 @@
 # include <dirent.h>
  #include <sys/stat.h>
  #include <sys/types.h>
- #include <sys/sysmacros.h>
+ //#include <sys/sysmacros.h>
  #include <pwd.h>
  #include <grp.h>
  #include <time.h>
@@ -58,6 +58,7 @@ typedef struct s_files
 	char *time;
 	bool is_dir;
 	bool is_perm;
+	bool is_dev;
 	struct s_files *next;
 }t_files;
 

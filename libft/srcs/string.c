@@ -40,7 +40,7 @@ char	*print_number_h_s_one(char *str)
 {
 	int i;
 
-	i = 0;
+	i = -1;
 	while (str[++i] == ' ')
 		;
 	if (ft_atoi(str) < 0 && !g_cvars.width)

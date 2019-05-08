@@ -134,6 +134,9 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 		elem->real_size = (long long)buff->st_size;
 		elem->major = (long)major(buff->st_rdev);
 		elem->minor = (long)minor(buff->st_rdev);
+		way[4] = '\0';
+		if (ft_strequ(way, "/dev"))
+			elem->is_dev = true;
 	}
 	elem->next = NULL;
 	return (elem);
@@ -180,21 +183,6 @@ void add_file(t_files **list, char *str, struct stat *buf, char *way)
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = create_file(str, buf, way);
-	}
-}
-
-void check_file_flags(t_files *tmp)
-{
-	if (!tmp->is_perm || !st.cv.flag_l)
-	{
-		if (tmp->flags[0] == 'd')
-			ft_printf("MCYN(%s)  ", tmp->f_name);
-		else if (ft_strequ("-rwxr-xr-x", tmp->flags))
-			ft_printf("MRED(%s) ", tmp->f_name);
-		else if (tmp->flags[0] == 'l')
-			ft_printf("MPRP(%s) ", tmp->f_name);
-		else
-			ft_printf("%s ", tmp->f_name);
 	}
 }
 
@@ -270,11 +258,12 @@ int prepare_links(t_files *files, int what)
 	{
 		if (what == 1)
 			z = nbr_len(tmp->links);
-		else
-			if (tmp->flags[0] != 'c' &&  tmp->flags[0] != 'b')
-				z = nbr_len(tmp->real_size);
-			else
-				z = nbr_len(tmp->minor);
+		else if (what == 4)
+			z = nbr_len(tmp->real_size);
+		else if (what == 2)
+			z = nbr_len(tmp->minor);
+		else if (what == 3)
+			z = nbr_len(tmp->major);
 		if (max < z)
 			max = z;
 		tmp = tmp->next;
@@ -294,11 +283,13 @@ int prepare_names(t_files *files, int what)
 	while (tmp)
 	{
 		if (what == 1)
-			i = ft_strlen(files->UID);
+			i = ft_strlen(tmp->UID);
 		if (what == 2)
-			i = ft_strlen(files->GID);
+			i = ft_strlen(tmp->GID);
 		if (what == 3)
-			i = ft_strlen(files->time);
+			i = ft_strlen(tmp->time);
+		if (what == 4)
+			i = ft_strlen(tmp->f_name);
 		if (max < i)
 			max = i;
 		tmp = tmp->next;
@@ -306,36 +297,63 @@ int prepare_names(t_files *files, int what)
 	return (max);
 }
 
-void prepare_to_print(t_files *files, int array[6])
+void prepare_to_print(t_files *files, int array[9])
 {
-	array[0] = 10;
+	array[0] = 11;
 	array[1] = prepare_links(files, 1);
 	array[2] = prepare_names(files, 1);
 	array[3] = prepare_names(files, 2);
-	array[4] = prepare_links(files, 2);
+	array[4] = prepare_links(files, 4);
 	array[5] = 12;
+	if (files->is_dev)
+	{
+		array[7] = prepare_links(files, 2);
+		array[8] = prepare_links(files, 3);
+	}
 }
 
-void to_array(int i, char tmp[1024], char *flag)
+void to_array(int i, char tmp[1024], char *flag, bool minus)
 {
 	char *str;
 
 	ft_bzero(tmp, 1024);
 	str = ft_itoa(i);
 	ft_strcat(tmp, "%");
+	if (minus == true)
+		ft_strcat(tmp, "-");
 	ft_strcat(tmp, str);
 	ft_strcat(tmp, flag);
 	free(str);
 }
 
-void print_size(int array[6], t_files *tmp, char str[1024])
+void print_size(int array[9], t_files *tmp, char str[1024])
 {
 	char *q;
-	if (tmp->flags[0] != 'c' &&  tmp->flags[0] != 'b')
+	int i;
+
+	i = 0;
+	if (tmp->is_dev)
 	{
+		if (tmp->major != 0)
+		{
+			to_array(array[8], str, "lu, ", false);
+			ft_printf(str, tmp->major);
+		}
+		else
+		{
+			while (++i < array[7])
+				ft_putchar(' ');
+		}
+		to_array(array[7], str, "lu, ", false);
+		ft_printf(str, tmp->minor);
+	}
+	else
+	{
+		to_array(array[7], str, "lu ", false);
+		ft_printf(str, tmp->minor);
 		if (!st.cv.flag_h)
 		{
-			to_array(array[4], str, "lu ");
+			to_array(array[4], str, "lu ", false);
 			ft_printf(str, tmp->real_size);
 		}
 		else
@@ -343,38 +361,75 @@ void print_size(int array[6], t_files *tmp, char str[1024])
 			q = printsize(tmp->real_size);
 			ft_printf("%4s ", q);
 			free(q);
-		}
-	}
-	else
-	{
-		to_array(array[4], str, "lu, ");
-		ft_printf(str, tmp->major);
+		}	
 	}
 }
 
-void print_long_format(t_files *tmp, int array[6])
+void print_f_name(char *str, int i)
+{
+	int len;
+
+	len = ft_strlen(str);
+	ft_putstr(str);
+	while (len++ < i)
+		ft_putchar(' ');
+}
+
+void print_long_format(t_files *tmp, int array[7])
 {
 	char str[1024];
 
 	ft_bzero(str, sizeof(str));
-	to_array(array[0], str, "s");
+	to_array(array[0], str, "s ", false);
 	ft_printf(str, tmp->flags);
-	to_array(array[1], str, "lu ");
+	to_array(array[1], str, "lu ", false);
 	ft_printf(str, tmp->links);
-	to_array(array[2], str, "s ");
-	ft_printf(str, tmp->UID);
-	to_array(array[3], str, "s ");
-	ft_printf(str, tmp->GID);
+	print_f_name(tmp->UID, array[2]);
+	ft_putstr("  ");
+	print_f_name(tmp->GID, array[3]);
+	ft_putstr("  ");
 	print_size(array, tmp, str);
-	to_array(array[5], str, "s ");
+	to_array(array[5], str, "s ", false);
 	ft_printf(str, tmp->time);
+}
+
+void check_file_flags(t_files *tmp, int array[7])
+{
+	char str[1024];
+
+	to_array(array[6], str, "s", true);
+	if (!tmp->is_perm || !st.cv.flag_l)
+	{
+		if (tmp->flags[0] == 'd')
+		{
+			ft_printf("MCYN(%");
+			print_f_name(tmp->f_name, array[6]);
+			ft_printf("MCYN()%");
+		}
+		else if (ft_strequ("-rwxr-xr-x ", tmp->flags))
+		{
+			ft_printf("MRED(");
+			print_f_name(tmp->f_name, array[6]);
+			ft_printf("MCYN()%");
+		}
+		else if (tmp->flags[0] == 'l')
+		{
+			ft_printf("MPRP(");
+			print_f_name(tmp->f_name, array[6]);
+			ft_printf("MPRP()%");
+		}
+		else
+		{
+			print_f_name(tmp->f_name, array[6]);
+		}
+	}
 }
 
 void print_files(t_files *list, t_dirs *dirs)
 {
 	t_files *tmp;
 	bool test;
-	int array[6];
+	int array[7];
 
 	test = false;
 	ft_bzero(array, sizeof(array));
@@ -382,17 +437,21 @@ void print_files(t_files *list, t_dirs *dirs)
 	if (st.cv.flag_l)
 		prepare_to_print(list, array);
 	if (tmp)
+	{
 		print_total(dirs->total);
+		array[6] = prepare_names(tmp, 4);
+	}
 	while (tmp)
 	{
 		test = true;
 		if (st.cv.flag_l)
 		{
 			print_long_format(tmp, array);
-			ft_printf("%s\n", tmp->f_name);
+			check_file_flags(tmp, array);
+			ft_printf("\n");
 		}
 		else
-			ft_printf("%s  ", tmp->f_name);
+			{check_file_flags(tmp, array);ft_printf(" ");}
 		tmp = tmp->next;
 	}
 	if (!st.cv.flag_l && test == true)

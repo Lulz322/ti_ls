@@ -130,6 +130,6 @@ void read_data(void)
 			ft_printf("\n");
 		del_me = dirs;
 		dirs = dirs->next;
-		del_elem(&st.dirs, del_me);
+	//	del_elem(&st.dirs, del_me);
   	}
 }

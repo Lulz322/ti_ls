@@ -17,11 +17,11 @@
 void			errrorrororo(void)
 {
 	ft_printf("MGRN(Usage: ./ft_ls -[l][a][r][R][t])\n");
-	ft_printf("\tMRED(-l)\tLong data format\n");
-	ft_printf("\tMRED(-a)\tContains File/Directories starts w/ '.'\n");
-	ft_printf("\tMRED(-r)\tReverse sort by names\n");
-	ft_printf("\tMRED(-R)\tContains All dirs in all dirs\n");
-	ft_printf("\tMRED(-t)\tSort by time\n");
+	ft_printf("\t\tMRED(-l)\tLong data format\n");
+	ft_printf("\t\tMRED(-a)\tContains File/Directories starts w/ '.'\n");
+	ft_printf("\t\tMRED(-r)\tReverse sort by names\n");
+	ft_printf("\t\tMRED(-R)\tContains All dirs in all dirs\n");
+	ft_printf("\t\tMRED(-t)\tSort by time\n");
 	exit(0);
 }
 
