@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/ft_ls",
            // "preLaunchTask": "re-build",
-            "args": ["-l", "/dev"],
+            "args": ["libft/srcs"],
             "cwd": "${workspaceFolder}",
             "environment": [],
             "MIMode": "lldb"

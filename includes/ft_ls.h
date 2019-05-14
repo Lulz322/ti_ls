@@ -101,5 +101,41 @@ void				split_other_files(t_files *files);
 t_dirs *sort_dirs_by_time(t_dirs *dirs);
 void				split_other_dirs(t_dirs *dirs);
 t_files		*sort_list_by_time(t_files *files);
-
+int	tty(int max_size);
 #endif
+
+/*
+void	print_tty(t_files *tmp, int max_size)
+{
+	size_t i;
+	size_t len;
+	int counter;
+	char **qwe;
+
+	i = 0;
+	len = count_files(tmp);
+	
+	while (tmp)
+	{
+		 ft_strdup(tmp->f_name);
+		i++;
+		tmp = tmp->next;
+	}
+	counter = 0;
+	i = 0;
+	int j = 0;
+	len = (len % 2) ? len / max_size : len / max_size + 1;
+	while (i < len)
+	{
+		ft_printf("%s ", qwe[j]);
+		j += len;
+		counter++;
+		if (counter == len)
+		{
+			counter = 0;
+			ft_printf("\n");
+			j = ++i;
+		}	
+	}
+}
+*/

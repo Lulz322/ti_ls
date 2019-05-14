@@ -305,7 +305,7 @@ void prepare_to_print(t_files *files, int array[9])
 	array[3] = prepare_names(files, 2);
 	array[4] = prepare_links(files, 4);
 	array[5] = 12;
-	if (files->is_dev)
+	if (files && files->is_dev)
 	{
 		array[7] = prepare_links(files, 2);
 		array[8] = prepare_links(files, 3);
@@ -331,12 +331,12 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 	char *q;
 	int i;
 
-	i = 0;
+	i = 1;
 	if (tmp->is_dev)
 	{
 		if (tmp->major != 0)
 		{
-			to_array(array[8], str, "lu, ", false);
+			to_array(array[8], str, "lu ", false);
 			ft_printf(str, tmp->major);
 		}
 		else
@@ -349,8 +349,6 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 	}
 	else
 	{
-		to_array(array[7], str, "lu ", false);
-		ft_printf(str, tmp->minor);
 		if (!st.cv.flag_h)
 		{
 			to_array(array[4], str, "lu ", false);
@@ -404,56 +402,124 @@ void check_file_flags(t_files *tmp, int array[7])
 		{
 			ft_printf("MCYN(%");
 			print_f_name(tmp->f_name, array[6]);
-			ft_printf("MCYN()%");
+			ft_printf(" MCYN()%");
 		}
 		else if (ft_strequ("-rwxr-xr-x ", tmp->flags))
 		{
 			ft_printf("MRED(");
 			print_f_name(tmp->f_name, array[6]);
-			ft_printf("MCYN()%");
+			ft_printf(" MCYN()%");
 		}
 		else if (tmp->flags[0] == 'l')
 		{
 			ft_printf("MPRP(");
 			print_f_name(tmp->f_name, array[6]);
-			ft_printf("MPRP()%");
+			ft_printf(" MPRP()%");
 		}
 		else
 		{
 			print_f_name(tmp->f_name, array[6]);
+			ft_printf(" ");
 		}
 	}
 }
 
-void print_files(t_files *list, t_dirs *dirs)
+int		count_files(t_files *files)
 {
 	t_files *tmp;
+	int i;
+
+	tmp = files;
+	i = 0;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	return (i);
+}
+
+bool	print_tty(t_files *tmp, int max_size, int array[9])
+{
+	t_files *start;
+	size_t i;
+	size_t len;
+	int counter;
+	int j = 0;
+
+	i = 0;
+	len = count_files(tmp);
+	start = tmp;
+	counter = (len % 2) ? len / max_size : len / max_size + 1;
+	i = 0;
+	len = 0;
+	while (i < counter)
+	{
+		tmp = start;
+		j = i + max_size;
+		for (size_t z = 0; z < i; z++)
+			tmp = tmp->next;
+		for (size_t a = 0; a < max_size; a++)
+		{
+			if (!tmp)
+				break ;
+			if (tmp->f_name)
+				check_file_flags(tmp, array);
+			for (size_t q = 0; q < counter; q++)
+			{
+				if (!tmp)
+					break;
+				tmp = tmp->next;
+			}
+		}
+		i++;
+	}
+	return (true);
+}
+
+
+
+bool	print_long_files(t_files *list, int array[9], bool test)
+{
+	t_files *tmp;
+
+	tmp = list;
+	prepare_to_print(list, array);
+	while (tmp)
+	{
+		test = true;
+		print_long_format(tmp, array);
+		ft_printf("\n");
+		tmp = tmp->next;
+	}	
+	return (test);
+}
+
+bool	print_names(int array[9], t_files *tmp, bool test)
+{
+	int max_size;
+
+	if (st.cv.flag_l)
+		test = print_long_files(tmp, array, test);
+	else
+	{
+		max_size = tty(array[6]);
+		test = print_tty(tmp, max_size, array);
+	}
+	return (test);
+}
+
+void print_files(t_files *list, t_dirs *dirs)
+{
 	bool test;
 	int array[7];
 
 	test = false;
 	ft_bzero(array, sizeof(array));
-	tmp = list;
-	if (st.cv.flag_l)
-		prepare_to_print(list, array);
-	if (tmp)
-	{
+	array[6] = prepare_names(list, 4);
+	if (list)
 		print_total(dirs->total);
-		array[6] = prepare_names(tmp, 4);
-	}
-	while (tmp)
-	{
-		test = true;
-		if (st.cv.flag_l)
-		{
-			print_long_format(tmp, array);
-			check_file_flags(tmp, array);
-			ft_printf("\n");
-		}
-		else
-			{check_file_flags(tmp, array);ft_printf(" ");}
-		tmp = tmp->next;
-	}
+	test = print_names(array, list, test);
 	if (!st.cv.flag_l && test == true)
 		ft_printf("\n");
 }
