@@ -359,7 +359,7 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 			q = printsize(tmp->real_size);
 			ft_printf("%4s ", q);
 			free(q);
-		}	
+		}
 	}
 }
 
@@ -439,45 +439,18 @@ int		count_files(t_files *files)
 	return (i);
 }
 
-bool	print_tty(t_files *tmp, int max_size, int array[9])
+bool	print_tty(t_files *tmp, int array[9])
 {
-	t_files *start;
-	size_t i;
-	size_t len;
-	int counter;
-	int j = 0;
+	t_files *print;
 
-	i = 0;
-	len = count_files(tmp);
-	start = tmp;
-	counter = (len % 2) ? len / max_size : len / max_size + 1;
-	i = 0;
-	len = 0;
-	while (i < counter)
+	print = tmp;
+	while (print)
 	{
-		tmp = start;
-		j = i + max_size;
-		for (size_t z = 0; z < i; z++)
-			tmp = tmp->next;
-		for (size_t a = 0; a < max_size; a++)
-		{
-			if (!tmp)
-				break ;
-			if (tmp->f_name)
-				check_file_flags(tmp, array);
-			for (size_t q = 0; q < counter; q++)
-			{
-				if (!tmp)
-					break;
-				tmp = tmp->next;
-			}
-		}
-		i++;
+		check_file_flags(print, array);
+		print = print->next;
 	}
-	return (true);
+	return true;
 }
-
-
 
 bool	print_long_files(t_files *list, int array[9], bool test)
 {
@@ -491,7 +464,7 @@ bool	print_long_files(t_files *list, int array[9], bool test)
 		print_long_format(tmp, array);
 		ft_printf("\n");
 		tmp = tmp->next;
-	}	
+	}
 	return (test);
 }
 
@@ -502,10 +475,7 @@ bool	print_names(int array[9], t_files *tmp, bool test)
 	if (st.cv.flag_l)
 		test = print_long_files(tmp, array, test);
 	else
-	{
-		max_size = tty(array[6]);
-		test = print_tty(tmp, max_size, array);
-	}
+		test = print_tty(tmp, array);
 	return (test);
 }
 
