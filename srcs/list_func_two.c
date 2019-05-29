@@ -4,38 +4,42 @@
 
 char *getUser(uid_t uid)
 {
-    struct passwd *pws;
-    pws = getpwuid(uid);
+	struct passwd *pws;
+	pws = getpwuid(uid);
 	if (pws)
-        return (pws->pw_name);
+		return (pws->pw_name);
 	return ("?");
 }
 
 char *getGroup(gid_t gid)
 {
-    struct group *pws;
-    pws = getgrgid(gid);
+	struct group *pws;
+	pws = getgrgid(gid);
 	if (pws)
-        return (pws->gr_name);
+		return (pws->gr_name);
 	return ("?");
 }
 
-void mode_to_letters(int mode,char *str)
+void mode_to_letters(int mode,char *str, char *path)
 {
-    strcpy(str,"---------- ");
-    if(S_ISDIR(mode))str[0]='d';
-    if(S_ISCHR(mode))str[0]='c';
-    if(S_ISBLK(mode))str[0]='b';
+	strcpy(str,"---------- ");
+	if(S_ISDIR(mode))str[0]='d';
+	if(S_ISCHR(mode))str[0]='c';
+	if(S_ISBLK(mode))str[0]='b';
 	if(S_ISLNK(mode))str[0]='l';
-    if(mode & S_IRUSR)str[1]='r';
-    if(mode & S_IWUSR)str[2]='w';
-    if(mode & S_IXUSR)str[3]='x';
-    if(mode & S_IRGRP)str[4]='r';
-    if(mode & S_IWGRP)str[5]='w';
-    if(mode & S_IXGRP)str[6]='x';
-    if(mode & S_IROTH)str[7]='r';
-    if(mode & S_IWOTH)str[8]='w';
-    if(mode & S_IXOTH)str[9]='x';
+	if(mode & S_IRUSR)str[1]='r';
+	if(mode & S_IWUSR)str[2]='w';
+	if(mode & S_IXUSR)str[3]='x';
+	if(mode & S_IRGRP)str[4]='r';
+	if(mode & S_IWGRP)str[5]='w';
+	if(mode & S_IXGRP)str[6]='x';
+	if(mode & S_IROTH)str[7]='r';
+	if(mode & S_IWOTH)str[8]='w';
+	if(mode & S_IXOTH)str[9]='x';
+	if (check_acl(path))
+		str[10] = '+';
+	if (check_ea(path))
+		str[10] = '@';
 }
 
 char	*ft_strndup(const char *s1, size_t n)
@@ -120,7 +124,7 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 	ft_bzero(elem, sizeof(t_files));
 	elem->f_name = ft_strdup(str);
 	elem->is_dir = is_dir(way);
-	mode_to_letters(buff->st_mode, elem->flags);
+	mode_to_letters(buff->st_mode, elem->flags, way);
 	if (st.cv.flag_l)
 	{
 		if (elem->flags[0] == 'l')
@@ -134,9 +138,6 @@ t_files *create_file(char *str, struct stat *buff, char *way)
 		elem->real_size = (long long)buff->st_size;
 		elem->major = (long)major(buff->st_rdev);
 		elem->minor = (long)minor(buff->st_rdev);
-		way[4] = '\0';
-		if (ft_strequ(way, "/dev"))
-			elem->is_dev = true;
 	}
 	elem->next = NULL;
 	return (elem);
@@ -216,23 +217,6 @@ void del_files(t_files **files)
 	}
 }
 
-void print_total(long i)
-{
-	char *q;
-
-	if(st.cv.flag_l)
-	{
-			if (!st.cv.flag_h)
-				ft_printf("total %lld\n", i);
-			else
-			{
-				q = printsize(i);
-				ft_printf("total %s\n", q);
-				free(q);
-			}
-	}
-}
-
 int nbr_len(unsigned int nbr)
 {
 	int len;
@@ -246,85 +230,6 @@ int nbr_len(unsigned int nbr)
 	return (len);
 }
 
-int prepare_links(t_files *files, int what)
-{
-	t_files *tmp;
-	int max;
-	int z;
-
-	max = 1;
-	tmp = files;
-	while (tmp)
-	{
-		if (what == 1)
-			z = nbr_len(tmp->links);
-		else if (what == 4)
-			z = nbr_len(tmp->real_size);
-		else if (what == 2)
-			z = nbr_len(tmp->minor);
-		else if (what == 3)
-			z = nbr_len(tmp->major);
-		if (max < z)
-			max = z;
-		tmp = tmp->next;
-	}
-	return (max);
-}
-
-int prepare_names(t_files *files, int what)
-{
-	t_files *tmp;
-	int i;
-	int max;
-
-	tmp = files;
-	i = 0;
-	max = 1;
-	while (tmp)
-	{
-		if (what == 1)
-			i = ft_strlen(tmp->UID);
-		if (what == 2)
-			i = ft_strlen(tmp->GID);
-		if (what == 3)
-			i = ft_strlen(tmp->time);
-		if (what == 4)
-			i = ft_strlen(tmp->f_name);
-		if (max < i)
-			max = i;
-		tmp = tmp->next;
-	}
-	return (max);
-}
-
-void prepare_to_print(t_files *files, int array[9])
-{
-	array[0] = 11;
-	array[1] = prepare_links(files, 1);
-	array[2] = prepare_names(files, 1);
-	array[3] = prepare_names(files, 2);
-	array[4] = prepare_links(files, 4);
-	array[5] = 12;
-	if (files && files->is_dev)
-	{
-		array[7] = prepare_links(files, 2);
-		array[8] = prepare_links(files, 3);
-	}
-}
-
-void to_array(int i, char tmp[1024], char *flag, bool minus)
-{
-	char *str;
-
-	ft_bzero(tmp, 1024);
-	str = ft_itoa(i);
-	ft_strcat(tmp, "%");
-	if (minus == true)
-		ft_strcat(tmp, "-");
-	ft_strcat(tmp, str);
-	ft_strcat(tmp, flag);
-	free(str);
-}
 
 void print_size(int array[9], t_files *tmp, char str[1024])
 {
@@ -336,15 +241,15 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 	{
 		if (tmp->major != 0)
 		{
-			to_array(array[8], str, "lu ", false);
+			to_array(array[8], str, "lu, ", false);
 			ft_printf(str, tmp->major);
 		}
 		else
 		{
-			while (++i < array[7])
+			while (++i < array[7] + array[8])
 				ft_putchar(' ');
 		}
-		to_array(array[7], str, "lu, ", false);
+		to_array(array[7], str, "lu ", false);
 		ft_printf(str, tmp->minor);
 	}
 	else
@@ -361,135 +266,4 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 			free(q);
 		}
 	}
-}
-
-void print_f_name(char *str, int i)
-{
-	int len;
-
-	len = ft_strlen(str);
-	ft_putstr(str);
-	while (len++ < i)
-		ft_putchar(' ');
-}
-
-void print_long_format(t_files *tmp, int array[7])
-{
-	char str[1024];
-
-	ft_bzero(str, sizeof(str));
-	to_array(array[0], str, "s ", false);
-	ft_printf(str, tmp->flags);
-	to_array(array[1], str, "lu ", false);
-	ft_printf(str, tmp->links);
-	print_f_name(tmp->UID, array[2]);
-	ft_putstr("  ");
-	print_f_name(tmp->GID, array[3]);
-	ft_putstr("  ");
-	print_size(array, tmp, str);
-	to_array(array[5], str, "s ", false);
-	ft_printf(str, tmp->time);
-}
-
-void check_file_flags(t_files *tmp, int array[7])
-{
-	char str[1024];
-
-	to_array(array[6], str, "s", true);
-	if (!tmp->is_perm || !st.cv.flag_l)
-	{
-		if (tmp->flags[0] == 'd')
-		{
-			ft_printf("MCYN(%");
-			print_f_name(tmp->f_name, array[6]);
-			ft_printf(" MCYN()%");
-		}
-		else if (ft_strequ("-rwxr-xr-x ", tmp->flags))
-		{
-			ft_printf("MRED(");
-			print_f_name(tmp->f_name, array[6]);
-			ft_printf(" MCYN()%");
-		}
-		else if (tmp->flags[0] == 'l')
-		{
-			ft_printf("MPRP(");
-			print_f_name(tmp->f_name, array[6]);
-			ft_printf(" MPRP()%");
-		}
-		else
-		{
-			print_f_name(tmp->f_name, array[6]);
-			ft_printf(" ");
-		}
-	}
-}
-
-int		count_files(t_files *files)
-{
-	t_files *tmp;
-	int i;
-
-	tmp = files;
-	i = 0;
-	while (tmp)
-	{
-		i++;
-		tmp = tmp->next;
-	}
-	return (i);
-}
-
-bool	print_tty(t_files *tmp, int array[9])
-{
-	t_files *print;
-
-	print = tmp;
-	while (print)
-	{
-		check_file_flags(print, array);
-		print = print->next;
-	}
-	return true;
-}
-
-bool	print_long_files(t_files *list, int array[9], bool test)
-{
-	t_files *tmp;
-
-	tmp = list;
-	prepare_to_print(list, array);
-	while (tmp)
-	{
-		test = true;
-		print_long_format(tmp, array);
-		ft_printf("\n");
-		tmp = tmp->next;
-	}
-	return (test);
-}
-
-bool	print_names(int array[9], t_files *tmp, bool test)
-{
-	int max_size;
-
-	if (st.cv.flag_l)
-		test = print_long_files(tmp, array, test);
-	else
-		test = print_tty(tmp, array);
-	return (test);
-}
-
-void print_files(t_files *list, t_dirs *dirs)
-{
-	bool test;
-	int array[7];
-
-	test = false;
-	ft_bzero(array, sizeof(array));
-	array[6] = prepare_names(list, 4);
-	if (list)
-		print_total(dirs->total);
-	test = print_names(array, list, test);
-	if (!st.cv.flag_l && test == true)
-		ft_printf("\n");
 }

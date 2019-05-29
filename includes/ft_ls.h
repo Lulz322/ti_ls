@@ -21,7 +21,14 @@
  #include <pwd.h>
  #include <grp.h>
  #include <time.h>
- #include <inttypes.h>
+//#include <inttypes.h>
+
+/*
+** BONUSES
+*/
+#include <sys/acl.h>
+#include <sys/xattr.h>
+
 # include "../libft/includes/ft_printf.h"
 #define _ERROR(ex) {ft_printf("%s\n", ex);exit(0);}
 # define _ERROR_MALLOC(ex) if(!(ex)) {_ERROR("ERROR IN ALLOCATION MEMMORY")};
@@ -67,6 +74,7 @@ typedef struct	s_dirs
 	char *name;
 	t_files *files;
 	blkcnt_t total;
+	bool	is_mm;
 	struct s_dirs *next;
 }				t_dirs;
 
@@ -82,9 +90,9 @@ void read_data();
 void add_elem(t_dirs **list, char *str);
 void print_list(t_dirs *list);
 void del_elem(t_dirs **list, t_dirs *elem);
-void mode_to_letters(int mode,char *str);
+void mode_to_letters(int mode,char *str, char *way);
 void add_file(t_files **list, char *str, struct stat *buf, char *way);
-void print_files(t_files *list, t_dirs *dirs);
+
 void bytes(off_t number, char size[4]);
 char *printsize(size_t  size);
 void add_beetween(t_dirs **list, char *str, bool a);
@@ -102,6 +110,27 @@ t_dirs *sort_dirs_by_time(t_dirs *dirs);
 void				split_other_dirs(t_dirs *dirs);
 t_files		*sort_list_by_time(t_files *files);
 int	tty(int max_size);
+bool		check_ea(char *str);
+bool		check_acl(char *str);
+int nbr_len(unsigned int nbr);
+int prepare_names(t_files *files, int what);
+void	check_majors(t_files *tmp);
+/*
+** PRINT
+*/
+
+void print_files(t_files *list, t_dirs *dirs);
+void check_file_flags(t_files *tmp, int array[7]);
+void prepare_to_print(t_files *files, int array[9]);
+bool	print_long_files(t_files *list, int array[9], bool test);
+bool	print_tty(t_files *tmp, int array[9]);
+void print_total(long i);
+void print_f_name(char *str, int i);
+void print_size(int array[9], t_files *tmp, char str[1024]);
+void to_array(int i, char tmp[1024], char *flag, bool minus);
+
+
+
 #endif
 
 /*
@@ -135,7 +164,7 @@ void	print_tty(t_files *tmp, int max_size)
 			counter = 0;
 			ft_printf("\n");
 			j = ++i;
-		}	
+		}
 	}
 }
 */

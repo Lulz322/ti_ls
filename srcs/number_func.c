@@ -32,20 +32,22 @@ char *less_then_ten(size_t size, size_t rem)
 
 char *printsize(size_t  size)
 {
-    static const char *SIZES[] = { "", "K", "M", "G", "T" };
-    size_t div = 0;
-    size_t rem = 0;
+	static const char *SIZES[] = { "B", "K", "M", "G", "T" };
+	size_t div = 0;
+	size_t rem = 0;
 	char *str;
 
-    while (size >= 1024 && div < (sizeof SIZES / sizeof *SIZES))
+	while (size >= 1024 && div < (sizeof SIZES / sizeof *SIZES))
 	{
-        rem = (size % 1024);
-        div++;
-        size /= 1024;
-    }
+		rem = (size % 1024);
+		div++;
+		size /= 1024;
+	}
 	if (div == 0)
 	{
 		str = ft_itoa(size + rem / 1024);
+		if (div <= 4 && ft_strlen(str) <= 3)
+			ft_strcat(str, SIZES[div]);
 		return (str);
 	}
 	if (size + rem / 1024 >= 10)
@@ -55,7 +57,7 @@ char *printsize(size_t  size)
 			str = ft_itoa(size + rem / 1024);
 	else
 		str = less_then_ten(size, rem);
-	if (div <= 4 )
+	if (div <= 4 && ft_strlen(str) <= 3)
 		ft_strcat(str, SIZES[div]);
 	return (str);
 }
