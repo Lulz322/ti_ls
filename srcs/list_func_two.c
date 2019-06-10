@@ -230,7 +230,6 @@ int nbr_len(unsigned int nbr)
 	return (len);
 }
 
-
 void print_size(int array[9], t_files *tmp, char str[1024])
 {
 	char *q;
