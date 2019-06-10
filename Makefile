@@ -53,7 +53,7 @@ $(LIBFT):
 	@$(LMAKE)
 
 $(NAME): $(LIBFT) $(OBJ)
-	@$(ECHO) -n ' <q.p> | $(NPWD): '
+	@$(ECHO) -n '$(NPWD): '
 	@$(CC) $(OBJ) $(LIBS) $(LIBFT) -o $(NAME)
 	@$(ECHO) "[$(INVERT)$(GREEN)✓$(WHITE)]"
 

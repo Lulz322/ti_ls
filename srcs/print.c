@@ -1,7 +1,7 @@
 #include "../includes/ft_ls.h"
 
 bool	print_names(int array[9], t_files *tmp, bool test)
-{
+{	
 	if (st.cv.flag_l)
 		test = print_long_files(tmp, array, test);
 	else

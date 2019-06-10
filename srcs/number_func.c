@@ -1,6 +1,5 @@
 #include "../includes/ft_ls.h"
 
-
 char *less_then_ten(size_t size, size_t rem)
 {
 	char *str;

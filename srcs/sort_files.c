@@ -4,14 +4,17 @@ static bool			check_split(t_files *files)
 {
 	if (files && files->next)
 	{
-		if (!st.cv.flag_r)
+		if (!st.cv.flag_t)
 		{
-			if (ft_strcmp(files->f_name, files->next->f_name) > 0)
-				return (true);
+			if (!st.cv.flag_r)
+			{
+				if (ft_strcmp(files->f_name, files->next->f_name) > 0)
+					return (true);
+			}
+			else
+				if (-ft_strcmp(files->f_name, files->next->f_name) > 0)
+					return (true);
 		}
-		else
-			if (-ft_strcmp(files->f_name, files->next->f_name) > 0)
-				return (true);
 	}
 	return (false);
 }
@@ -20,18 +23,30 @@ static bool			is_swap(t_files *files)
 {
 	if (files && files->next)
 	{
-		if (!st.cv.flag_r)
-		{
-			if (files->all_time < files->next->all_time)
-				return (true);
-		}
-		else
-			if (files->all_time > files->next->all_time)
-				return (true);
+		if (files->all_time < files->next->all_time)
+			return (true);
 	}
 	return (false);
 }
 
+t_files *sort_reverse(t_files *files)
+{
+	t_files	*prev;
+	t_files	*curr;
+	t_files	*next;
+
+	curr = files;
+	files = NULL;
+	prev = NULL;
+	while (curr != NULL)
+	{
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+	return (prev);
+}
 
 t_files		*sort_list_by_time(t_files *files)
 {
@@ -52,6 +67,8 @@ t_files		*sort_list_by_time(t_files *files)
 				start = start->next;
 			}
 		}
+	if (st.cv.flag_r)
+		files = sort_reverse(files);
 	return (files);
 }
 

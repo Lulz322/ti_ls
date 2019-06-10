@@ -124,11 +124,19 @@ void read_argc(t_files *files, t_dirs *dirs)
 		if (st.cv.flag_t)
 			files = sort_list_by_time(files);
 		files = sort_list_by_names(files);
-		print_files(files,dirs);
-		del_files(&files);
-		st.is_name = true;
-		if (dirs)
-		ft_printf("\n");
+		if (files->flags[0] == 'l')
+		{
+			ft_putstr(files->f_name);
+		add_elem(&dirs, files->f_name);
+		}
+		else
+		{
+			print_files(files, dirs);
+			del_files(&files);
+			st.is_name = true;
+			if (dirs)
+				ft_printf("\n");
+		}
 	}
 }
 
@@ -168,7 +176,5 @@ int				main(int argc, char **argv)
 	else
 		st.dirs = sort_dirs_by_names(st.dirs);
 	check_dirs(st.dirs);
-	//print_list(st.dirs);
 	read_data();
-//	system("leaks ft_ls");
 }

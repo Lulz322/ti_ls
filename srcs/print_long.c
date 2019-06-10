@@ -1,14 +1,30 @@
 #include "../includes/ft_ls.h"
 
-void print_long_format(t_files *tmp, int array[7])
+void	print_links(unsigned int i, int len)
+{
+	int nbr_len;
+	unsigned int j;
+	int c;
+
+	j = i;
+	nbr_len = 1;
+	while (j /= 10)
+		++nbr_len;
+	c = len - nbr_len;
+	while (c--)
+		ft_putchar(' ');
+	ft_putnbr((int)i);
+	ft_putchar(' ');
+}
+
+void	print_long_format(t_files *tmp, int array[7])
 {
 	char str[1024];
 
 	ft_bzero(str, sizeof(str));
-	to_array(array[0], str, "s ", false);
-	ft_printf(str, tmp->flags);
-	to_array(array[1], str, "lu ", false);
-	ft_printf(str, tmp->links);
+	ft_putstr(tmp->flags);
+	ft_putstr(" ");
+	print_links(tmp->links, array[1]);
 	print_f_name(tmp->UID, array[2]);
 	ft_putstr("  ");
 	print_f_name(tmp->GID, array[3]);

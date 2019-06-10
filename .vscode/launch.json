@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/ft_ls",  
            // "preLaunchTask": "re-build",
-            "args": ["-l", "/"],
+            "args": ["-ltr", "/tmp"],
             "cwd": "${workspaceFolder}",
             "environment": [],
             "MIMode": "lldb"
