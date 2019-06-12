@@ -117,8 +117,9 @@ int		is_file(char *filename, t_files **argc)
 	return (1);
 }
 
-void read_argc(t_files *files, t_dirs *dirs)
+t_dirs *read_argc(t_files *files, t_dirs *dirs)
 {
+	char *tmp;
 	if (files)
 	{
 		if (st.cv.flag_t)
@@ -130,6 +131,7 @@ void read_argc(t_files *files, t_dirs *dirs)
 		if (dirs)
 			ft_printf("\n");
 	}
+	return (dirs);
 }
 
 void check_dirs(t_dirs *dirs)
@@ -155,8 +157,7 @@ void check_dirs(t_dirs *dirs)
 		}
 		tmp = tmp->next;
 	}
-	read_argc(argc, dirs);
-	st.dirs = dirs;
+	st.dirs = read_argc(argc, dirs);
 }
 
 int				main(int argc, char **argv)
@@ -169,5 +170,4 @@ int				main(int argc, char **argv)
 		st.dirs = sort_dirs_by_names(st.dirs);
 	check_dirs(st.dirs);
 	read_data();
-	system("leaks ft_ls");
 }

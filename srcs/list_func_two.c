@@ -36,10 +36,10 @@ void mode_to_letters(int mode,char *str, char *path)
 	if(mode & S_IROTH)str[7]='r';
 	if(mode & S_IWOTH)str[8]='w';
 	if(mode & S_IXOTH)str[9]='x';
-	if (check_acl(path))
-		str[10] = '+';
-	if (check_ea(path))
-		str[10] = '@';
+	//if (check_acl(path))
+	//	str[10] = '+';
+	//if (check_ea(path))
+//		str[10] = '@';
 }
 
 char	*ft_strndup(const char *s1, size_t n)

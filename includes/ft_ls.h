@@ -17,11 +17,11 @@
 # include <dirent.h>
  #include <sys/stat.h>
  #include <sys/types.h>
- //#include <sys/sysmacros.h>
+ #include <sys/sysmacros.h>
  #include <pwd.h>
  #include <grp.h>
  #include <time.h>
-//#include <inttypes.h>
+#include <inttypes.h>
 
 /*
 ** BONUSES
@@ -143,7 +143,7 @@ void	print_tty(t_files *tmp, int max_size)
 
 	i = 0;
 	len = count_files(tmp);
-	
+
 	while (tmp)
 	{
 		 ft_strdup(tmp->f_name);

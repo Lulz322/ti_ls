@@ -1,5 +1,5 @@
 #include "../includes/ft_ls.h"
-
+/*
 bool		check_acl(char *str)
 {
 	acl_t	acl;
@@ -22,3 +22,4 @@ bool		check_ea(char *str)
 {
 	return ((listxattr(str, NULL, 0, XATTR_NOFOLLOW) > false ? true : false));
 }
+*/
