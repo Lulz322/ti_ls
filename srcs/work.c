@@ -25,8 +25,6 @@ bool	is_dir(char *dirname)
 
 	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode))
 			return (true);
-	else if (S_ISLNK(buf.st_mode))
-			return (true);
 	return (false);
 }
 
