@@ -141,7 +141,7 @@ void check_dirs(t_dirs *dirs)
 
 	argc = NULL;
 	tmp = dirs;
-	if (tmp && tmp->next)
+
 		st.is_name = true;
 	while (tmp)
 	{

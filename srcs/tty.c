@@ -30,7 +30,10 @@ void	check_majors(t_files *tmp)
 	while (start)
 	{
 		if (start->flags[0] == 'c' || start->flags[0] == 'b')
+		{
 			set_all_true(tmp);
+			return ;
+		}
 		start = start->next;
 	}
 }

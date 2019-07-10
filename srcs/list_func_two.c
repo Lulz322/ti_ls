@@ -245,7 +245,7 @@ void print_size(int array[9], t_files *tmp, char str[1024])
 		}
 		else
 		{
-			while (++i < array[7] + array[8] - 1)
+			while (++i <= array[8] + 3)
 				ft_putchar(' ');
 		}
 		to_array(array[7], str, "lu ", false);
