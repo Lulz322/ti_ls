@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list_funcs.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/04 19:02:59 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/04 19:03:01 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 
-t_dirs *create_elem(char *str)
+t_dirs	*create_elem(char *str)
 {
 	t_dirs *elem;
 
@@ -11,7 +23,7 @@ t_dirs *create_elem(char *str)
 	return (elem);
 }
 
-void add_elem(t_dirs **list, char *str)
+void	add_elem(t_dirs **list, char *str)
 {
 	t_dirs *tmp;
 
@@ -27,9 +39,10 @@ void add_elem(t_dirs **list, char *str)
 	}
 }
 
-void print_list(t_dirs *list) {
-	t_dirs *tmp;
-	int i;
+void	print_list(t_dirs *list)
+{
+	t_dirs	*tmp;
+	int		i;
 
 	i = 1;
 	tmp = list;
@@ -40,12 +53,12 @@ void print_list(t_dirs *list) {
 	}
 }
 
-void add_beetween(t_dirs **list, char *str, bool a)
+void	add_beetween(t_dirs **list, char *str, bool a)
 {
-	t_dirs *tmp;
-	t_dirs *eby;
-	t_dirs *save_next;
-	static t_dirs *save;
+	t_dirs			*tmp;
+	t_dirs			*eby;
+	t_dirs			*save_next;
+	static t_dirs	*save;
 
 	if (a == 1)
 	{
@@ -63,15 +76,15 @@ void add_beetween(t_dirs **list, char *str, bool a)
 	save = eby->next;
 }
 
-
-void del_elem(t_dirs **list, t_dirs *elem)
+void	del_elem(t_dirs **list, t_dirs *elem)
 {
 	t_dirs *tmp;
 	t_dirs *save;
 
 	tmp = *list;
 	save = tmp;
-	while (tmp != elem) {
+	while (tmp != elem)
+	{
 		save = tmp;
 		tmp = tmp->next;
 	}

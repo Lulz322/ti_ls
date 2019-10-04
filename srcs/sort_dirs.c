@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort_dirs.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/04 19:39:33 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/04 19:39:34 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 
 static int			check_split_dirs(t_dirs *dirs)
@@ -10,8 +22,10 @@ static int			check_split_dirs(t_dirs *dirs)
 				return (1);
 		}
 		else
+		{
 			if (-ft_strcmp(dirs->name, dirs->next->name) > 0)
 				return (1);
+		}
 	}
 	return (0);
 }
@@ -31,15 +45,17 @@ static bool			is_swap(t_dirs *dirs)
 				return (true);
 		}
 		else
+		{
 			if ((long)buf1.st_mtime > (long)buf2.st_mtime)
 				return (true);
+		}
 	}
 	return (false);
 }
 
-t_dirs *sort_dirs_by_time(t_dirs *dirs)
+t_dirs				*sort_dirs_by_time(t_dirs *dirs)
 {
-	t_dirs *start;
+	t_dirs			*start;
 	size_t			i;
 
 	i = 1;
@@ -59,9 +75,9 @@ t_dirs *sort_dirs_by_time(t_dirs *dirs)
 	return (dirs);
 }
 
-t_dirs *sort_dirs_by_names(t_dirs *dirs)
+t_dirs				*sort_dirs_by_names(t_dirs *dirs)
 {
-	t_dirs *start;
+	t_dirs			*start;
 	size_t			i;
 
 	i = 1;

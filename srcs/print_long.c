@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_long.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/04 19:29:47 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/04 19:29:48 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 
 void	print_links(unsigned int i, int len)
 {
-	int nbr_len;
-	unsigned int j;
-	int c;
+	int				nbr_len;
+	unsigned int	j;
+	int				c;
 
 	j = i;
 	nbr_len = 1;

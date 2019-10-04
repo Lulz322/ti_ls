@@ -7,7 +7,9 @@ int tty(int max_size)
 {
 	struct winsize w;
 	ioctl(0, TIOCGWINSZ, &w);
-	return (w.ws_col / max_size - 2);
+	if (max_size == 0)
+		return(w.ws_col - 1);
+	return ((w.ws_col / max_size));
 }
 
 void	set_all_true(t_files *tmp)

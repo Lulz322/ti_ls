@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   prepare_to_print.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/04 19:26:54 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/04 19:26:55 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 
-void to_array(int i, char tmp[1024], char *flag, bool minus)
+void	to_array(int i, char tmp[1024], char *flag, bool minus)
 {
 	char *str;
 
@@ -14,11 +26,11 @@ void to_array(int i, char tmp[1024], char *flag, bool minus)
 	free(str);
 }
 
-int prepare_links(t_files *files, int what)
+int		prepare_links(t_files *files, int what)
 {
-	t_files *tmp;
-	int max;
-	int z;
+	t_files	*tmp;
+	int		max;
+	int		z;
 
 	max = 1;
 	tmp = files;
@@ -39,11 +51,11 @@ int prepare_links(t_files *files, int what)
 	return (max);
 }
 
-int prepare_names(t_files *files, int what)
+int		prepare_names(t_files *files, int what)
 {
-	t_files *tmp;
-	int i;
-	int max;
+	t_files	*tmp;
+	int		i;
+	int		max;
 
 	tmp = files;
 	i = 0;
@@ -65,7 +77,7 @@ int prepare_names(t_files *files, int what)
 	return (max);
 }
 
-void prepare_to_print(t_files *files, int array[9])
+void	prepare_to_print(t_files *files, int array[9])
 {
 	array[0] = 11;
 	array[1] = prepare_links(files, 1);

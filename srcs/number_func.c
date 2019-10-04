@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   number_func.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/04 18:47:36 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/04 18:58:01 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 
-char *less_then_ten(size_t size, size_t rem)
+char		*less_then_ten(size_t size, size_t rem)
 {
 	char *str;
 	char *tmp;
@@ -28,27 +40,34 @@ char *less_then_ten(size_t size, size_t rem)
 	return (str);
 }
 
-
-char *printsize(size_t  size)
+static char	*fuck(size_t size, int rem, int div)
 {
-	static const char *SIZES[] = { "B", "K", "M", "G", "T" };
-	size_t div = 0;
-	size_t rem = 0;
-	char *str;
+	char				*str;
+	static const char	*sizzzzzz[] = { "B", "K", "M", "G", "T" };
 
-	while (size >= 1024 && div < (sizeof SIZES / sizeof *SIZES))
+	str = ft_itoa(size + rem / 1024);
+	if (div <= 4 && ft_strlen(str) <= 3)
+		ft_strcat(str, sizzzzzz[div]);
+	return (str);
+}
+
+char		*printsize(size_t size)
+{
+	static const char	*sizzzzzz[] = { "B", "K", "M", "G", "T" };
+	size_t				div;
+	size_t				rem;
+	char				*str;
+
+	div = 0;
+	rem = 0;
+	while (size >= 1024 && div < (sizeof(sizzzzzz) / sizeof(*sizzzzzz)))
 	{
 		rem = (size % 1024);
 		div++;
 		size /= 1024;
 	}
 	if (div == 0)
-	{
-		str = ft_itoa(size + rem / 1024);
-		if (div <= 4 && ft_strlen(str) <= 3)
-			ft_strcat(str, SIZES[div]);
-		return (str);
-	}
+		return (fuck(size, rem, div));
 	if (size + rem / 1024 >= 10)
 		if (rem >= 512)
 			str = ft_itoa(size + rem / 1024 + 1);
@@ -57,6 +76,6 @@ char *printsize(size_t  size)
 	else
 		str = less_then_ten(size, rem);
 	if (div <= 4 && ft_strlen(str) <= 3)
-		ft_strcat(str, SIZES[div]);
+		ft_strcat(str, sizzzzzz[div]);
 	return (str);
 }
