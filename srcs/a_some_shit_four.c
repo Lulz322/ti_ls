@@ -15,12 +15,12 @@
 void	parsing_dirs(int argc, char **argv, int i)
 {
 	if (i == argc)
-		add_elem(&st.dirs, ".");
+		add_elem(&g_gen.dirs, ".");
 	else
 	{
 		while (i < argc)
 		{
-			add_elem(&st.dirs, argv[i]);
+			add_elem(&g_gen.dirs, argv[i]);
 			i++;
 		}
 	}
@@ -43,17 +43,17 @@ bool	check_second_symbol(char str)
 void	is_real_shit(char **argv, int i, int j)
 {
 	if (argv[i][j] == 'l')
-		st.cv.flag_l = true;
+		g_gen.cv.flag_l = true;
 	else if (argv[i][j] == 'a')
-		st.cv.flag_a = true;
+		g_gen.cv.flag_a = true;
 	else if (argv[i][j] == 'R')
-		st.cv.flag_R = true;
+		g_gen.cv.flag_r_big = true;
 	else if (argv[i][j] == 't')
-		st.cv.flag_t = true;
+		g_gen.cv.flag_t = true;
 	else if (argv[i][j] == 'r')
-		st.cv.flag_r = true;
+		g_gen.cv.flag_r = true;
 	else if (argv[i][j] == 'h')
-		st.cv.flag_h = true;
+		g_gen.cv.flag_h = true;
 	else if (argv[i][j] == '-')
 	{
 		if (check_second_symbol(argv[i][j + 1]))

@@ -16,9 +16,9 @@ static bool			check_split(t_files *files)
 {
 	if (files && files->next)
 	{
-		if (!st.cv.flag_t)
+		if (!g_gen.cv.flag_t)
 		{
-			if (!st.cv.flag_r)
+			if (!g_gen.cv.flag_r)
 			{
 				if (ft_strcmp(files->f_name, files->next->f_name) > 0)
 					return (true);
@@ -81,7 +81,7 @@ t_files				*sort_list_by_time(t_files *files)
 				start = start->next;
 			}
 		}
-	if (st.cv.flag_r)
+	if (g_gen.cv.flag_r)
 		files = sort_reverse(files);
 	return (files);
 }

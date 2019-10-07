@@ -27,12 +27,12 @@ t_dirs	*read_argc(t_files *files, t_dirs *dirs)
 {
 	if (files)
 	{
-		if (st.cv.flag_t)
+		if (g_gen.cv.flag_t)
 			files = sort_list_by_time(files);
 		files = sort_list_by_names(files);
 		print_files(files, dirs);
 		del_files(&files);
-		st.is_name = true;
+		g_gen.is_name = true;
 		if (dirs)
 			ft_printf("\n");
 	}
@@ -46,7 +46,7 @@ void	check_dirs(t_dirs *dirs)
 
 	argc = NULL;
 	tmp = dirs;
-	st.is_name = true;
+	g_gen.is_name = true;
 	while (tmp)
 	{
 		if (!is_dir(tmp->name))
@@ -61,5 +61,5 @@ void	check_dirs(t_dirs *dirs)
 		}
 		tmp = tmp->next;
 	}
-	st.dirs = read_argc(argc, dirs);
+	g_gen.dirs = read_argc(argc, dirs);
 }

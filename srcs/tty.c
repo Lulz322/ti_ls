@@ -1,14 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tty.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/07 16:09:09 by iruban            #+#    #+#             */
+/*   Updated: 2019/10/07 16:09:10 by iruban           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ls.h"
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <termios.h>
 
-int tty(int max_size)
+int		tty(int max_size)
 {
 	struct winsize w;
+
 	ioctl(0, TIOCGWINSZ, &w);
 	if (max_size == 0)
-		return(w.ws_col - 1);
+		return (w.ws_col - 1);
 	return ((w.ws_col / max_size));
 }
 

@@ -16,7 +16,7 @@ static int			check_split_dirs(t_dirs *dirs)
 {
 	if (dirs && dirs->next)
 	{
-		if (!st.cv.flag_r)
+		if (!g_gen.cv.flag_r)
 		{
 			if (ft_strcmp(dirs->name, dirs->next->name) > 0)
 				return (1);
@@ -39,7 +39,7 @@ static bool			is_swap(t_dirs *dirs)
 	{
 		lstat(dirs->name, &buf1);
 		lstat(dirs->next->name, &buf2);
-		if (!st.cv.flag_r)
+		if (!g_gen.cv.flag_r)
 		{
 			if ((long)buf1.st_mtime < (long)buf2.st_mtime)
 				return (true);

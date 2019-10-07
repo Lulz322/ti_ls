@@ -77,10 +77,10 @@ void	del_file(t_files **pzdc)
 	t_files *del_me;
 
 	del_me = *pzdc;
-	if (st.cv.flag_l)
+	if (g_gen.cv.flag_l)
 	{
-		free(del_me->UID);
-		free(del_me->GID);
+		free(del_me->uid);
+		free(del_me->gid);
 		free(del_me->size);
 		free(del_me->time);
 	}

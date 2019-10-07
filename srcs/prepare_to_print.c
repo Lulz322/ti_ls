@@ -63,9 +63,9 @@ int		prepare_names(t_files *files, int what)
 	while (tmp)
 	{
 		if (what == 1)
-			i = ft_strlen(tmp->UID);
+			i = ft_strlen(tmp->uid);
 		if (what == 2)
-			i = ft_strlen(tmp->GID);
+			i = ft_strlen(tmp->gid);
 		if (what == 3)
 			i = ft_strlen(tmp->time);
 		if (what == 4)

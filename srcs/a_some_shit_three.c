@@ -63,7 +63,7 @@ void	print_size_second(t_files *tmp, int array[9], char str[1024])
 {
 	char *q;
 
-	if (!st.cv.flag_h)
+	if (!g_gen.cv.flag_h)
 	{
 		to_array(array[4], str, "lu ", false);
 		ft_printf(str, tmp->real_size);

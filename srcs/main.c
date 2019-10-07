@@ -28,17 +28,18 @@ void	errrorrororo(void)
 void	print_argc(void)
 {
 	ft_printf("l : %d\nR : %d\nt : %d\nr : %d\na : %d\n",
-		st.cv.flag_l, st.cv.flag_R, st.cv.flag_t, st.cv.flag_r, st.cv.flag_a);
+		g_gen.cv.flag_l, g_gen.cv.flag_r_big, g_gen.cv.flag_t, g_gen.cv.flag_r,
+		g_gen.cv.flag_a);
 }
 
 int		main(int argc, char **argv)
 {
-	st.dirs = NULL;
+	g_gen.dirs = NULL;
 	parsing_argc(argc, argv);
-	if (st.cv.flag_t)
-		st.dirs = sort_dirs_by_time(st.dirs);
+	if (g_gen.cv.flag_t)
+		g_gen.dirs = sort_dirs_by_time(g_gen.dirs);
 	else
-		st.dirs = sort_dirs_by_names(st.dirs);
-	check_dirs(st.dirs);
+		g_gen.dirs = sort_dirs_by_names(g_gen.dirs);
+	check_dirs(g_gen.dirs);
 	read_data();
 }

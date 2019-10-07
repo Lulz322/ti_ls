@@ -81,13 +81,13 @@ t_files	*create_file(char *str, struct stat *buff, char *way)
 	elem->f_name = ft_strdup(str);
 	elem->is_dir = is_dir(way);
 	mode_to_letters(buff->st_mode, elem->flags, way);
-	if (st.cv.flag_l)
+	if (g_gen.cv.flag_l)
 	{
 		if (elem->flags[0] == 'l')
 			add_link(elem, way);
 		elem->links = buff->st_nlink;
-		elem->UID = ft_strdup(get_user(buff->st_uid));
-		elem->GID = ft_strdup(get_group(buff->st_gid));
+		elem->uid = ft_strdup(get_user(buff->st_uid));
+		elem->gid = ft_strdup(get_group(buff->st_gid));
 		elem->all_time = (long)buff->st_mtime;
 		elem->time = pars_data(ctime(&elem->all_time), elem->all_time);
 		elem->size = printsize(buff->st_size);

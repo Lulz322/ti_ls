@@ -14,7 +14,7 @@
 #define QWE(str) {ft_printf(str);print_f_name(tmp->f_name, array[6]);}
 #define OK {print_f_name(tmp->f_name, array[6]);ft_printf(" ");}
 
-void	print_f_name(char *str, int i)
+void			print_f_name(char *str, int i)
 {
 	int len;
 
@@ -24,12 +24,12 @@ void	print_f_name(char *str, int i)
 		ft_putchar(' ');
 }
 
-void	check_file_flags(t_files *tmp, int array[7])
+void			check_file_flags(t_files *tmp, int array[7])
 {
 	char str[1024];
 
 	to_array(array[6], str, "s", true);
-	if (!tmp->is_perm || !st.cv.flag_l)
+	if (!tmp->is_perm || !g_gen.cv.flag_l)
 	{
 		if (tmp->flags[0] == 'd')
 		{
@@ -38,7 +38,7 @@ void	check_file_flags(t_files *tmp, int array[7])
 		}
 		else if (ft_strequ("-rwxr-xr-x ", tmp->flags))
 		{
-			QWE("MREAD(%");
+			QWE("MRED(%");
 			ft_printf(" MCYN()%");
 		}
 		else if (tmp->flags[0] == 'l')
@@ -84,16 +84,15 @@ unsigned int	count_files(t_files *tmp)
 
 bool			print_tty(t_files *tmp, int array[9])
 {
-	t_files *print;
-	int max_size;
-	int i;
-	int j;
+	t_files	*print;
+	int		i;
+	int		j;
+	int		z;
 
 	j = -1;
 	i = -1;
-	max_size = tty(max_name(tmp));
-	int z = (int)(count_files(tmp) / max_size) + 1;
-	while (++j < (int)(count_files(tmp) / max_size) + 1)
+	z = (int)(count_files(tmp) / tty(max_name(tmp))) + 1;
+	while (++j < (int)(count_files(tmp) / tty(max_name(tmp))) + 1)
 	{
 		print = tmp;
 		i = -1;
@@ -106,8 +105,8 @@ bool			print_tty(t_files *tmp, int array[9])
 				check_file_flags(print, array);
 			print = print->next;
 		}
-		if (j + 1 < (int)(count_files(tmp) / max_size) + 1)
+		if (j + 1 < (int)(count_files(tmp) / tty(max_name(tmp))) + 1)
 			ft_printf("\n");
 	}
-	return true;
+	return (true);
 }

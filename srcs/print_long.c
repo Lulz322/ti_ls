@@ -37,9 +37,9 @@ void	print_long_format(t_files *tmp, int array[7])
 	ft_putstr(tmp->flags);
 	ft_putstr(" ");
 	print_links(tmp->links, array[1]);
-	print_f_name(tmp->UID, array[2]);
+	print_f_name(tmp->uid, array[2]);
 	ft_putstr("  ");
-	print_f_name(tmp->GID, array[3]);
+	print_f_name(tmp->gid, array[3]);
 	ft_putstr("  ");
 	print_size(array, tmp, str);
 	to_array(array[5], str, "s ", false);
