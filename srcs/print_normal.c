@@ -72,7 +72,7 @@ unsigned int	count_files(t_files *tmp)
 	t_files	*start;
 	int		i;
 
-	i = -1;
+	i = 0;
 	start = tmp;
 	while (start)
 	{
@@ -92,6 +92,7 @@ bool			print_tty(t_files *tmp, int array[9])
 	j = -1;
 	i = -1;
 	z = (int)(count_files(tmp) / tty(max_name(tmp))) + 1;
+	printf("Files: %d tty: %d  answer : %d\n", count_files(tmp), tty(max_name(tmp)), z);
 	while (++j < (int)(count_files(tmp) / tty(max_name(tmp))) + 1)
 	{
 		print = tmp;

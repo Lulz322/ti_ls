@@ -22,7 +22,7 @@ int		tty(int max_size)
 	ioctl(0, TIOCGWINSZ, &w);
 	if (max_size == 0)
 		return (w.ws_col - 1);
-	return ((w.ws_col / max_size));
+	return ((w.ws_col / (max_size + 1)));
 }
 
 void	set_all_true(t_files *tmp)
