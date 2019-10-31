@@ -113,6 +113,9 @@ t_dirs				*sort_dirs_by_time(t_dirs *dirs);
 void				split_other_dirs(t_dirs *dirs);
 t_files				*sort_list_by_time(t_files *files);
 int					tty(int max_size);
+void				check_bits_suid(int mode, char *str);
+void				check_bits_sgid(int mode, char *str);
+void				check_bits_t(int mode, char *str);
 bool				check_ea(char *str);
 bool				check_acl(char *str);
 int					nbr_len(unsigned int nbr);
@@ -120,6 +123,7 @@ int					prepare_names(t_files *files, int what);
 void				check_majors(t_files *tmp);
 void				del_files(t_files **files);
 int					nbr_len(unsigned int nbr);
+int					is_file(char *filename, t_files **argc);
 void				print_size_first(t_files *tmp, int array[9],
 					char str[1024]);
 void				print_size_second(t_files *tmp, int array[9],
@@ -150,7 +154,7 @@ void				check_dirs(t_dirs *dirs);
 ** PRINT
 */
 void				print_files(t_files *list, t_dirs *dirs);
-void				check_file_flags(t_files *tmp, int array[7]);
+void				check_file_flags(t_files *tmp, int array);
 void				prepare_to_print(t_files *files, int array[9]);
 bool				print_long_files(t_files *list, int array[9], bool test);
 bool				print_tty(t_files *tmp, int array[9]);

@@ -6,7 +6,7 @@
 /*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 16:08:59 by iruban            #+#    #+#             */
-/*   Updated: 2019/10/07 16:09:02 by iruban           ###   ########.fr       */
+/*   Updated: 2019/10/15 18:34:10 by iruban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ bool		check_permission(char *dirname)
 	struct stat	buf;
 
 	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode)
-	&& (!(buf.st_mode & S_IRUSR)
-	|| !(buf.st_mode & S_IXUSR)))
+	&& (!(buf.st_mode & S_IRUSR)))
 		return (false);
 	return (true);
 }
@@ -38,8 +37,14 @@ bool		is_dir(char *dirname)
 {
 	struct stat	buf;
 
-	if (!lstat(dirname, &buf) && S_ISDIR(buf.st_mode))
+	if ((!lstat(dirname, &buf) && S_ISDIR(buf.st_mode)))
 		return (true);
+	if (S_ISLNK(buf.st_mode) && !g_gen.cv.flag_l)
+	{
+		if ((!lstat(dirname, &buf)))
+			return (false);
+		return (true);
+	}
 	return (false);
 }
 
@@ -70,6 +75,9 @@ void		set_files(t_dirs *dirs, struct dirent *entry)
 		dirs->total += buf.st_blocks;
 	}
 	else
-		add_name(&dirs->files, entry->d_name);
+	{
+		if (!g_gen.cv.flag_l)
+			add_name(&dirs->files, entry->d_name);
+	}
 	ft_bzero(tmp, 1025);
 }

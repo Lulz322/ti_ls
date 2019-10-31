@@ -6,7 +6,7 @@
 /*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/04 19:28:07 by iruban            #+#    #+#             */
-/*   Updated: 2019/10/04 19:28:08 by iruban           ###   ########.fr       */
+/*   Updated: 2019/10/10 15:11:57 by iruban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	print_files(t_files *list, t_dirs *dirs)
 	if (list && dirs)
 		print_total(dirs->total);
 	test = print_names(array, list, test);
-	if (!g_gen.cv.flag_l && test == true)
+	if (!g_gen.cv.flag_l &&
+			test == true && list)
 		ft_printf("\n");
 }
 

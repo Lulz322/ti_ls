@@ -6,7 +6,7 @@
 /*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 16:09:09 by iruban            #+#    #+#             */
-/*   Updated: 2019/10/07 16:09:10 by iruban           ###   ########.fr       */
+/*   Updated: 2019/10/10 15:06:27 by iruban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		tty(int max_size)
 	struct winsize w;
 
 	ioctl(0, TIOCGWINSZ, &w);
-	if (max_size == 0)
+	if (max_size <= 0)
 		return (w.ws_col - 1);
 	return ((w.ws_col / (max_size + 1)));
 }

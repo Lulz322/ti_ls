@@ -37,8 +37,9 @@ static bool			is_swap(t_dirs *dirs)
 
 	if (dirs && dirs->next)
 	{
-		lstat(dirs->name, &buf1);
-		lstat(dirs->next->name, &buf2);
+		if (lstat(dirs->name, &buf1) == -1 ||
+		lstat(dirs->next->name, &buf2) == -1)
+			return (false);
 		if (!g_gen.cv.flag_r)
 		{
 			if ((long)buf1.st_mtime < (long)buf2.st_mtime)

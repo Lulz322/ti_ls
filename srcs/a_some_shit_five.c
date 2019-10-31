@@ -32,11 +32,42 @@ t_dirs	*read_argc(t_files *files, t_dirs *dirs)
 		files = sort_list_by_names(files);
 		print_files(files, dirs);
 		del_files(&files);
-		g_gen.is_name = true;
 		if (dirs)
 			ft_printf("\n");
 	}
 	return (dirs);
+}
+
+void	check_bits_sgid(int mode, char *str)
+{
+	if (mode & S_IXGRP)
+	{
+		if (mode & S_ISGID)
+			str[6] = 's';
+		else
+			str[6] = 'x';
+	}
+	else
+	{
+		if (mode & S_ISGID)
+			str[6] = 'S';
+	}
+}
+
+void	check_bits_suid(int mode, char *str)
+{
+	if (mode & S_IXUSR)
+	{
+		if (mode & S_ISUID)
+			str[3] = 's';
+		else
+			str[3] = 'x';
+	}
+	else
+	{
+		if (mode & S_ISUID)
+			str[6] = 'S';
+	}
 }
 
 void	check_dirs(t_dirs *dirs)
@@ -46,7 +77,8 @@ void	check_dirs(t_dirs *dirs)
 
 	argc = NULL;
 	tmp = dirs;
-	g_gen.is_name = true;
+	if (dirs && dirs->next)
+		g_gen.is_name = true;
 	while (tmp)
 	{
 		if (!is_dir(tmp->name))

@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "../includes/ft_ls.h"
-#define QWE(str) {ft_printf(str);print_f_name(tmp->f_name, array[6]);}
-#define OK {print_f_name(tmp->f_name, array[6]);ft_printf(" ");}
+#define QWE(str) {ft_printf(str);print_f_name(tmp->f_name, array);}
+#define OK {print_f_name(tmp->f_name, array);}
+#define SPACE {if(array != 0){ft_printf(" ");}}
 
 void			print_f_name(char *str, int i)
 {
@@ -24,31 +25,32 @@ void			print_f_name(char *str, int i)
 		ft_putchar(' ');
 }
 
-void			check_file_flags(t_files *tmp, int array[7])
+void			check_file_flags(t_files *tmp, int array)
 {
 	char str[1024];
 
-	to_array(array[6], str, "s", true);
+	to_array(array, str, "s", true);
 	if (!tmp->is_perm || !g_gen.cv.flag_l)
 	{
 		if (tmp->flags[0] == 'd')
 		{
 			QWE("MCYN(%");
-			ft_printf(" MCYN()%");
+			ft_printf("MCYN()%");
 		}
 		else if (ft_strequ("-rwxr-xr-x ", tmp->flags))
 		{
 			QWE("MRED(%");
-			ft_printf(" MCYN()%");
+			ft_printf("MCYN()%");
 		}
 		else if (tmp->flags[0] == 'l')
 		{
 			QWE("MPRP(%");
-			ft_printf(" MPRP()%");
+			ft_printf("MPRP()%");
 		}
 		else
 			OK;
 	}
+	SPACE;
 }
 
 unsigned int	max_name(t_files *tmp)
@@ -91,8 +93,7 @@ bool			print_tty(t_files *tmp, int array[9])
 
 	j = -1;
 	i = -1;
-	z = (int)(count_files(tmp) / tty(max_name(tmp))) + 1;
-	printf("Files: %d tty: %d  answer : %d\n", count_files(tmp), tty(max_name(tmp)), z);
+	z = (int)(count_files(tmp) / tty(max_name(tmp)) + 1);
 	while (++j < (int)(count_files(tmp) / tty(max_name(tmp))) + 1)
 	{
 		print = tmp;
@@ -103,7 +104,7 @@ bool			print_tty(t_files *tmp, int array[9])
 		while (print)
 		{
 			if (++i % z == 0)
-				check_file_flags(print, array);
+				check_file_flags(print, array[6]);
 			print = print->next;
 		}
 		if (j + 1 < (int)(count_files(tmp) / tty(max_name(tmp))) + 1)

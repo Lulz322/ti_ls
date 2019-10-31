@@ -21,7 +21,8 @@ void	to_array(int i, char tmp[1024], char *flag, bool minus)
 	ft_strcat(tmp, "%");
 	if (minus == true)
 		ft_strcat(tmp, "-");
-	ft_strcat(tmp, str);
+	if (i != 0)
+		ft_strcat(tmp, str);
 	ft_strcat(tmp, flag);
 	free(str);
 }

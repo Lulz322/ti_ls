@@ -44,7 +44,7 @@ void	print_long_format(t_files *tmp, int array[7])
 	print_size(array, tmp, str);
 	to_array(array[5], str, "s ", false);
 	ft_printf(str, tmp->time);
-	check_file_flags(tmp, array);
+	check_file_flags(tmp, 0);
 }
 
 bool	print_long_files(t_files *list, int array[9], bool test)

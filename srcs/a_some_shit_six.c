@@ -29,6 +29,20 @@ t_files			*add_files_to_list(DIR *dir, t_dirs *dirs)
 	return (dirs->files);
 }
 
+void			check_bits_t(int mode, char *str)
+{
+	if (mode & S_IXOTH)
+	{
+		if (mode & S_ISVTX)
+			str[9] = 't';
+	}
+	else
+	{
+		if (mode & S_ISVTX)
+			str[9] = 'T';
+	}
+}
+
 void			check_r_flag(t_files *files, t_dirs *dirs)
 {
 	t_files	*tmp;

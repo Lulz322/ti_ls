@@ -6,7 +6,7 @@
 /*   By: iruban <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/04 19:30:49 by iruban            #+#    #+#             */
-/*   Updated: 2019/10/04 19:30:49 by iruban           ###   ########.fr       */
+/*   Updated: 2019/10/15 18:33:42 by iruban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int		main(int argc, char **argv)
 {
 	g_gen.dirs = NULL;
 	parsing_argc(argc, argv);
+	g_gen.dirs = sort_dirs_by_names(g_gen.dirs);
 	if (g_gen.cv.flag_t)
 		g_gen.dirs = sort_dirs_by_time(g_gen.dirs);
-	else
-		g_gen.dirs = sort_dirs_by_names(g_gen.dirs);
 	check_dirs(g_gen.dirs);
 	read_data();
+	return (0);
 }

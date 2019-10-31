@@ -14,7 +14,8 @@ endif
 
 LC += rcs
 
-CC := gcc -march=native -mtune=native -flto -Ofast -std=c11
+CC := gcc -g3 
+#-march=native -mtune=native -flto -Ofast -std=c11
 CFLAGS := -Wall -Wextra -Wunused
 INC := -I $(CURDIR)/includes/
 

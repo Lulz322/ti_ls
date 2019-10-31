@@ -40,12 +40,12 @@ void	mode_to_letters_two(char *str, int mode)
 		str[5] = 'w';
 	if (mode & S_IXGRP)
 		str[6] = 'x';
+	check_bits_sgid(mode, str);
 	if (mode & S_IROTH)
 		str[7] = 'r';
 	if (mode & S_IWOTH)
 		str[8] = 'w';
-	if (mode & S_IXOTH)
-		str[9] = 'x';
+	check_bits_t(mode, str);
 }
 
 void	mode_to_letters(int mode, char *str, char *path)
@@ -65,6 +65,7 @@ void	mode_to_letters(int mode, char *str, char *path)
 		str[2] = 'w';
 	if (mode & S_IXUSR)
 		str[3] = 'x';
+	check_bits_suid(mode, str);
 	if (check_acl(path))
 		str[10] = '+';
 	if (check_ea(path))
@@ -81,6 +82,7 @@ t_files	*create_file(char *str, struct stat *buff, char *way)
 	elem->f_name = ft_strdup(str);
 	elem->is_dir = is_dir(way);
 	mode_to_letters(buff->st_mode, elem->flags, way);
+	elem->all_time = (long)buff->st_mtime;
 	if (g_gen.cv.flag_l)
 	{
 		if (elem->flags[0] == 'l')
@@ -88,7 +90,6 @@ t_files	*create_file(char *str, struct stat *buff, char *way)
 		elem->links = buff->st_nlink;
 		elem->uid = ft_strdup(get_user(buff->st_uid));
 		elem->gid = ft_strdup(get_group(buff->st_gid));
-		elem->all_time = (long)buff->st_mtime;
 		elem->time = pars_data(ctime(&elem->all_time), elem->all_time);
 		elem->size = printsize(buff->st_size);
 		elem->real_size = (long long)buff->st_size;
